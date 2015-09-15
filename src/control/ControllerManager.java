@@ -11,7 +11,7 @@ import org.usb4java.DeviceList;
 import org.usb4java.LibUsb;
 import org.usb4java.LibUsbException;
 
-public class UsbControllerManager {
+public class ControllerManager{
 	public static class ProductVendor {
 		private short product;
 		private short vendor;
@@ -30,26 +30,27 @@ public class UsbControllerManager {
 		}
 	}
 	
-	private static final String DEFAULT_PRODUCT_VENDOR_FILE = "config\\AllowedDevices.dat";
+	private static final String DEFAULT_USB_PRODUCT_VENDOR_FILE = "config\\AllowedDevices.dat";
+	private static final ControllerManager INSTANCE = new ControllerManager();
 	
 	private ArrayList<ProductVendor> allowedProductVendorList;
 	private ArrayList<UsbController> controllerList;
 	private DeviceList deviceList;
 	private Context libUsbContext;
 	
-	public UsbControllerManager(){
+	private ControllerManager(){
 		libUsbContext = new Context();
 		int result = LibUsb.init(libUsbContext);
 		if (result != LibUsb.SUCCESS){
 			throw new LibUsbException("Unable to initialize libusb.", result);		
 		}
 		
-		loadAllowedDeviceList(DEFAULT_PRODUCT_VENDOR_FILE);
-		loadDevices();
-		filterDevices();
+		loadAllowedUsbDeviceList(DEFAULT_USB_PRODUCT_VENDOR_FILE);
+		loadUsbDevices();
+		filterUsbDevices();
 	}
 	
-	public void destroyManager(){		
+	public void destroyManager(){
 		if (controllerList != null){
 			for (UsbController controller : controllerList){
 				controller.stopController();
@@ -61,18 +62,22 @@ public class UsbControllerManager {
 		LibUsb.exit(libUsbContext);
 	}
 	
+	public static ControllerManager getInstance(){
+		return INSTANCE;
+	}
+	
 	public ArrayList<UsbController> getUsbControllerList(){
 		if (controllerList == null){
-			filterDevices();
+			filterUsbDevices();
 		}
 		return controllerList;
 	}
 	
-	public void loadAllowedDeviceList(String path){
+	public void loadAllowedUsbDeviceList(String path){
 		allowedProductVendorList = new ArrayList<ProductVendor>();
 		
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(path == null ? DEFAULT_PRODUCT_VENDOR_FILE : path));
+			BufferedReader br = new BufferedReader(new FileReader(path == null ? DEFAULT_USB_PRODUCT_VENDOR_FILE : path));
 			String line;
 			while ((line = br.readLine()) != null){
 				if (line.isEmpty() || line.startsWith("#")){
@@ -95,7 +100,7 @@ public class UsbControllerManager {
 		}
 	}
 	
-	public String printDeviceList(boolean isPrintedToStdOut)
+	public String printUsbDeviceList(boolean isPrintedToStdOut)
 	{
 		StringBuilder deviceListStringBuilder = new StringBuilder();
 		for (Device device: deviceList){
@@ -112,13 +117,13 @@ public class UsbControllerManager {
 		return deviceListStringBuilder.toString();
 	}
 	
-	private void filterDevices(){
+	private void filterUsbDevices(){
 		if (controllerList == null){
 			controllerList = new ArrayList<UsbController>();
 		}
 		if (allowedProductVendorList == null){
 			allowedProductVendorList = new ArrayList<ProductVendor>();
-			loadAllowedDeviceList(DEFAULT_PRODUCT_VENDOR_FILE);
+			loadAllowedUsbDeviceList(DEFAULT_USB_PRODUCT_VENDOR_FILE);
 		}
 		
 		for (Device device : deviceList){
@@ -137,7 +142,7 @@ public class UsbControllerManager {
 		}
 	}
 	
-	private void loadDevices(){
+	private void loadUsbDevices(){
 		if (deviceList != null){
 			LibUsb.freeDeviceList(deviceList, true);
 		}

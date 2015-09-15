@@ -13,7 +13,7 @@ import org.usb4java.InterfaceDescriptor;
 import org.usb4java.LibUsb;
 import org.usb4java.LibUsbException;
 
-import control.UsbControllerManager.ProductVendor;
+import control.ControllerManager.ProductVendor;
 
 public class UsbController extends AbstractController{
 	private ByteBuffer buffer;
@@ -128,6 +128,10 @@ public class UsbController extends AbstractController{
 			if (bitmask != 0){
 				if (defaultCallback != null){
 					defaultCallback.getCallback().handleEvent(bitmask);
+				}
+				
+				if (oneClickCallback != null){
+					oneClickCallback.getCallback().handleEvent(bitmask);
 				}
 				
 				for (ControllerKeybind bind : keyBindings){

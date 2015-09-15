@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 
 import control.ControllerEventListener;
 import control.UsbController;
-import control.UsbControllerManager;
+import control.ControllerManager;
 
 public class Main extends JFrame {
 	class EvtSingleButton implements ControllerEventListener {
@@ -37,13 +37,13 @@ public class Main extends JFrame {
 		}
 	}
 	
-	UsbControllerManager manager;
+	ControllerManager manager;
 	JLabel label;
 	JLabel label2;
 	UsbController c1;
 	
 	public Main(){
-		manager = new UsbControllerManager();
+		manager = ControllerManager.getInstance();
 		label = new JLabel("Loading..");
 		label.setFont(new Font("Courier new", Font.BOLD, 34));
 		label2 = new JLabel("Loading..");

@@ -7,5 +7,6 @@ public interface IController {
 	public Iterable<ControllerKeybind> getAllKeybinds();
 	public long getDefaultBitmaskValue();
 	public ControllerKeybind removeUnmaskedCallback();
+	public void setOneClickCallback(ControllerEventListener callback);
 	public void setUnmaskedCallback(ControllerEventListener callback);
 }

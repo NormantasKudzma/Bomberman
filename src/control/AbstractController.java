@@ -12,6 +12,7 @@ public abstract class AbstractController implements IController{
 	protected volatile boolean isActive;
 	protected volatile boolean isStopped;
 	protected ArrayList<ControllerKeybind> keyBindings = new ArrayList<ControllerKeybind>();
+	protected ControllerKeybind oneClickCallback;
 	
 	public void addKeybind(long bitmask, ControllerEventListener callback){
 		keyBindings.add(new ControllerKeybind(bitmask, callback));
@@ -49,6 +50,10 @@ public abstract class AbstractController implements IController{
 		ControllerKeybind temp = defaultCallback;
 		defaultCallback = null;
 		return temp;
+	}
+	
+	public void setOneClickCallback(ControllerEventListener callback){
+		oneClickCallback = new ControllerKeybind(0xffff, callback);
 	}
 	
 	public void setUnmaskedCallback(ControllerEventListener callback){

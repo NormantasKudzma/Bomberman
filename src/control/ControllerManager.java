@@ -33,33 +33,100 @@ public class ControllerManager{
 	private static final String DEFAULT_USB_PRODUCT_VENDOR_FILE = "config\\AllowedDevices.dat";
 	private static final ControllerManager INSTANCE = new ControllerManager();
 	
-	private ArrayList<ProductVendor> allowedProductVendorList;
-	private ArrayList<UsbController> controllerList;
-	private DeviceList deviceList;
+	private ArrayList<ProductVendor> allowedUsbProductVendorList;
+	private ArrayList<UsbController> usbControllerList;
+	private DeviceList usbDeviceList;
 	private Context libUsbContext;
+	private LwjglKeyboardController lwjglKeyboardController;
+	private ArrayList<AbstractController> allControllers = new ArrayList<AbstractController>();
 	
 	private ControllerManager(){
-		libUsbContext = new Context();
-		int result = LibUsb.init(libUsbContext);
-		if (result != LibUsb.SUCCESS){
-			throw new LibUsbException("Unable to initialize libusb.", result);		
-		}
 		
-		loadAllowedUsbDeviceList(DEFAULT_USB_PRODUCT_VENDOR_FILE);
-		loadUsbDevices();
-		filterUsbDevices();
 	}
 	
 	public void destroyManager(){
-		if (controllerList != null){
-			for (UsbController controller : controllerList){
+		for (AbstractController c : allControllers){
+			c.stopController();
+		}
+		
+		if (usbControllerList != null){
+			for (UsbController controller : usbControllerList){
 				controller.stopController();
 			}
 		}
-		if (deviceList != null){
-			LibUsb.freeDeviceList(deviceList, true);
+		if (usbDeviceList != null){
+			LibUsb.freeDeviceList(usbDeviceList, true);
+			LibUsb.exit(libUsbContext);
 		}
-		LibUsb.exit(libUsbContext);
+		if (lwjglKeyboardController != null){
+			lwjglKeyboardController.destroyController();
+		}
+	}
+	
+	private void filterUsbDevices(){
+		if (usbControllerList == null){
+			usbControllerList = new ArrayList<UsbController>();
+		}
+		if (allowedUsbProductVendorList == null){
+			allowedUsbProductVendorList = new ArrayList<ProductVendor>();
+			loadAllowedUsbDeviceList(DEFAULT_USB_PRODUCT_VENDOR_FILE);
+		}
+		
+		for (Device device : usbDeviceList){
+			DeviceDescriptor descriptor = new DeviceDescriptor();
+			int result = LibUsb.getDeviceDescriptor(device, descriptor);
+			if (result != LibUsb.SUCCESS){
+				throw new LibUsbException("Unable to read device descriptor", result);
+			}
+			
+			for (ProductVendor pair : allowedUsbProductVendorList){
+				if (descriptor.idProduct() == pair.getProduct() && descriptor.idVendor() == pair.getVendor()){
+					String bp = LibUsb.getBusNumber(device) + ":" + LibUsb.getPortNumber(device);
+					usbControllerList.add(new UsbController(bp, libUsbContext, device, pair));
+				}
+			}
+		}
+	}
+	
+	public AbstractController getController(EController type){
+		return getController(type, 0);
+	}
+	
+	public AbstractController getController(EController type, int index){
+		switch (type){
+			case LWJGLKEYBOARDCONTROLLER:{
+				if (lwjglKeyboardController == null){
+					lwjglKeyboardController = new LwjglKeyboardController();
+					allControllers.add(lwjglKeyboardController);
+				}
+				return lwjglKeyboardController;
+			}
+			case USBCONTROLLER:{
+				if (usbDeviceList == null){
+					libUsbContext = new Context();
+					int result = LibUsb.init(libUsbContext);
+					if (result != LibUsb.SUCCESS){
+						throw new LibUsbException("Unable to initialize libusb.", result);		
+					}
+					
+					loadAllowedUsbDeviceList(DEFAULT_USB_PRODUCT_VENDOR_FILE);
+					loadUsbDevices();
+					filterUsbDevices();
+					
+					for (UsbController u : usbControllerList){
+						allControllers.add(u);
+					}
+				}
+				if (usbDeviceList != null && index >= 0 && index < usbControllerList.size()){
+					return usbControllerList.get(index);
+				}
+				return null;
+			}
+			default:{
+				// Invalid request,
+				return null;
+			}
+		}
 	}
 	
 	public static ControllerManager getInstance(){
@@ -67,14 +134,14 @@ public class ControllerManager{
 	}
 	
 	public ArrayList<UsbController> getUsbControllerList(){
-		if (controllerList == null){
+		if (usbControllerList == null){
 			filterUsbDevices();
 		}
-		return controllerList;
+		return usbControllerList;
 	}
 	
 	public void loadAllowedUsbDeviceList(String path){
-		allowedProductVendorList = new ArrayList<ProductVendor>();
+		allowedUsbProductVendorList = new ArrayList<ProductVendor>();
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path == null ? DEFAULT_USB_PRODUCT_VENDOR_FILE : path));
@@ -91,7 +158,7 @@ public class ControllerManager{
 				
 				short product = Short.parseShort(params[0].substring(params[0].length() - 4), 16);
 				short vendor = Short.parseShort(params[1].substring(params[1].length() - 4), 16);
-				allowedProductVendorList.add(new ProductVendor(product, vendor));
+				allowedUsbProductVendorList.add(new ProductVendor(product, vendor));
 			}
 			br.close();
 		}
@@ -99,11 +166,29 @@ public class ControllerManager{
 			e.printStackTrace();
 		}
 	}
+
+	private void loadUsbDevices(){
+		if (usbDeviceList != null){
+			LibUsb.freeDeviceList(usbDeviceList, true);
+		}
+		
+		usbDeviceList = new DeviceList();
+	    int result = LibUsb.getDeviceList(libUsbContext, usbDeviceList);
+	    if (result < 0){
+	    	throw new LibUsbException("Unable to get device list", result);
+	    }
+	}
+	
+	public void pollControllers(){
+		for (AbstractController c : allControllers){
+			c.pollController();
+		}
+	}
 	
 	public String printUsbDeviceList(boolean isPrintedToStdOut)
 	{
 		StringBuilder deviceListStringBuilder = new StringBuilder();
-		for (Device device: deviceList){
+		for (Device device: usbDeviceList){
 			DeviceDescriptor descriptor = new DeviceDescriptor();
 			int result = LibUsb.getDeviceDescriptor(device, descriptor);
 			if (result != LibUsb.SUCCESS){
@@ -115,42 +200,5 @@ public class ControllerManager{
 			System.out.print(deviceListStringBuilder.toString());
 		}
 		return deviceListStringBuilder.toString();
-	}
-	
-	private void filterUsbDevices(){
-		if (controllerList == null){
-			controllerList = new ArrayList<UsbController>();
-		}
-		if (allowedProductVendorList == null){
-			allowedProductVendorList = new ArrayList<ProductVendor>();
-			loadAllowedUsbDeviceList(DEFAULT_USB_PRODUCT_VENDOR_FILE);
-		}
-		
-		for (Device device : deviceList){
-			DeviceDescriptor descriptor = new DeviceDescriptor();
-			int result = LibUsb.getDeviceDescriptor(device, descriptor);
-			if (result != LibUsb.SUCCESS){
-				throw new LibUsbException("Unable to read device descriptor", result);
-			}
-			
-			for (ProductVendor pair : allowedProductVendorList){
-				if (descriptor.idProduct() == pair.getProduct() && descriptor.idVendor() == pair.getVendor()){
-					String bp = LibUsb.getBusNumber(device) + ":" + LibUsb.getPortNumber(device);
-					controllerList.add(new UsbController(bp, libUsbContext, device, pair));
-				}
-			}
-		}
-	}
-	
-	private void loadUsbDevices(){
-		if (deviceList != null){
-			LibUsb.freeDeviceList(deviceList, true);
-		}
-		
-		deviceList = new DeviceList();
-	    int result = LibUsb.getDeviceList(libUsbContext, deviceList);
-	    if (result < 0){
-	    	throw new LibUsbException("Unable to get device list", result);
-	    }
 	}
 }

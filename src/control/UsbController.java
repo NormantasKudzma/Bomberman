@@ -13,6 +13,8 @@ import org.usb4java.InterfaceDescriptor;
 import org.usb4java.LibUsb;
 import org.usb4java.LibUsbException;
 
+import com.sun.org.apache.xml.internal.utils.UnImplNode;
+
 import control.ControllerManager.ProductVendor;
 
 public class UsbController extends AbstractController{
@@ -63,7 +65,7 @@ public class UsbController extends AbstractController{
 		return productVendor;
 	}
 	
-	public void startController(){
+	public void startController(long window){
 		if (isStopped){
 			return;
 		}
@@ -113,6 +115,11 @@ public class UsbController extends AbstractController{
 			    if (result != LibUsb.SUCCESS) throw new LibUsbException("Unable to re-attach kernel driver", result);
 			}
 		}
+	}
+	
+	public void pollController(){
+		// STUB
+		//System.err.println("UNIMPLEMENTED::USB_CONTROLLER_POLL");
 	}
 	
 	private long read(DeviceHandle handle, int size){

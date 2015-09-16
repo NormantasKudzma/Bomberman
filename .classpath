@@ -11,5 +11,10 @@
 	<classpathentry kind="lib" path="libs/libusb4java-1.2.0-windows-x86_64.jar"/>
 	<classpathentry kind="lib" path="libs/libusb4java-1.2.0-windows-x86.jar"/>
 	<classpathentry kind="lib" path="libs/usb4java-1.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl/lwjgl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="BombermanProject/libs/native"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -2,6 +2,8 @@ package graphics;
 
 import java.io.IOException;
 
+import org.lwjgl.opengl.GL11;
+
 import utils.Vector2;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -9,7 +11,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Sprite2D implements IRenderable {
 	private Vector2 position = new Vector2();
 	private float rotation = 0.0f;
-	private Vector2 scale = new Vector2();
+	private Vector2 scale = new Vector2(1.0f, -1.0f);
 	private Texture texture;	// Sprite's texture
 	private int zOrder = 0;		// Render position, lower Z order will be rendered earlier 
 								// (ie. Z1 will be rendered before Z20)
@@ -43,6 +45,8 @@ public class Sprite2D implements IRenderable {
 	public void loadTexture(String path){
 		try {
 			texture = TextureLoader.getInstance().getTexture(path);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		}
 		catch (IOException e){
 			e.printStackTrace();
@@ -54,16 +58,16 @@ public class Sprite2D implements IRenderable {
 	public void render() {
 		// store the current model matrix
         glPushMatrix();
- 
+        glLoadIdentity();
         // bind to the appropriate texture for this sprite
         texture.bind();
  
         // translate to the right location and prepare to draw
         glTranslatef(position.x(), position.y(), 0);
+        setPosition(Vector2.add(getPosition(), new Vector2(0.001f, 0.001f)));
+        glRotatef(rotation, 0, 0, 1.0f);
         
-        //glRotatef(rotation, 0, 0, 1);
-        
-        //glScalef(scale.x(), scale.y(), 0);
+        glScalef(scale.x(), scale.y(), 1.0f);
  
         // draw a quad textured to match the sprite
         glBegin(GL_QUADS);
@@ -107,7 +111,7 @@ public class Sprite2D implements IRenderable {
 	}
 	
 	public void setScale(Vector2 s){
-		scale = s;
+		scale.set(s.x(), -s.y());
 	}
 	
 	public void setScaleX(float xs){
@@ -115,11 +119,11 @@ public class Sprite2D implements IRenderable {
 	}
 	
 	public void setScaleY(float ys){
-		scale.setY(ys);
+		scale.setY(-ys);
 	}
 	
 	public void setScale(float x, float y){
-		scale.set(x, y);
+		scale.set(x, -y);
 	}
 	
 	public void setTexture(Texture tex){

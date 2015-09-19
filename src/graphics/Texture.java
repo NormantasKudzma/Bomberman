@@ -129,7 +129,7 @@ public class Texture {
 	 * @return The height of physical texture
 	 */
 	public float getHeight() {
-		return height;
+		return heightRatio;
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class Texture {
 	 * @return The width of physical texture
 	 */
 	public float getWidth() {
-		return width;
+		return widthRatio;
 	}
 
 	/**

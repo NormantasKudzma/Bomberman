@@ -1,4 +1,4 @@
-package control;
+package controls;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -15,7 +15,7 @@ import org.usb4java.LibUsbException;
 
 import com.sun.org.apache.xml.internal.utils.UnImplNode;
 
-import control.ControllerManager.ProductVendor;
+import controls.ControllerManager.ProductVendor;
 
 public class UsbController extends AbstractController{
 	private ByteBuffer buffer;

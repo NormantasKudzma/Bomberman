@@ -16,5 +16,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="BombermanProject/libs/native"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libs/jbox2d-library-2.2.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

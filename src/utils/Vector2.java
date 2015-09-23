@@ -1,15 +1,14 @@
 package utils;
 
+import org.jbox2d.common.Vec2;
+
 public class Vector2 {
 	public static final Vector2 right = new Vector2(1, 0);
 	public static final Vector2 left = new Vector2(-1, 0);
 	public static final Vector2 up = new Vector2(0, -1);
 	public static final Vector2 down = new Vector2(0, 1);
 	public static final Vector2 zero = new Vector2(0, 0);
-	
-	public static final Vector2 upLeft = new Vector2(-1, -1);
-	public static final Vector2 downLeft = new Vector2(-1, 1);
-	public static final Vector2 upRight = new Vector2(1, -1);
+	public static final Vector2 one = new Vector2(1, 1);
 	
 	protected float x, y;
 	
@@ -20,6 +19,12 @@ public class Vector2 {
 	public Vector2(float x, float y){
 		this.x = x;
 		this.y = y;
+	}
+	
+	public Vector2 fromVec2(Vec2 v){
+		x = v.x;
+		y = v.y;
+		return this;
 	}
 	
 	public float x(){
@@ -57,6 +62,14 @@ public class Vector2 {
 		return new Vector2(i.x + j.x, i.y + j.y);
 	}
 
+	public static Vector2 fromVec2(Vector2 v){
+		return new Vector2(v.x, v.y);
+	}
+	
+	public static Vec2 toVec2(Vector2 v){
+		return new Vec2(v.x, v.y);
+	}
+	
 	public static float distanceSqr(Vector2 i, Vector2 j){
 		float dx = j.x - i.x;
 		float dy = j.y - i.y;

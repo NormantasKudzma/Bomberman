@@ -1,4 +1,4 @@
-package controltest;
+package game;
 
 import graphics.Sprite2D;
 
@@ -9,11 +9,10 @@ import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
-import utils.Vector2;
-import control.AbstractController;
-import control.ControllerEventListener;
-import control.ControllerManager;
-import control.EController;
+import controls.AbstractController;
+import controls.ControllerEventListener;
+import controls.ControllerManager;
+import controls.EController;
 
 public class BombermanMain{
 	private int frameHeight = 720;
@@ -75,9 +74,6 @@ public class BombermanMain{
         }
         
         sprite = new Sprite2D("smetona.jpg");
-        sprite.setPosition(-0.5f, -0.5f);
-        sprite.setRotation(15);
-        sprite.setScale(0.25f, 0.25f);
 	}
 	
 	private void loop() {
@@ -95,7 +91,7 @@ public class BombermanMain{
         	GL11.glMatrixMode(GL11.GL_MODELVIEW);
         	GL11.glLoadIdentity();
         	
-        	sprite.render();
+        	//sprite.render();
         	
         	GLFW.glfwSwapBuffers(windowHandle); // swap the color buffers
  

@@ -1,4 +1,4 @@
-package control;
+package controls;
 
 public interface IController {
 	public void addKeybind(long bitmask, ControllerEventListener callback);

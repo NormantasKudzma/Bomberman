@@ -1,4 +1,4 @@
-package control;
+package controls;
 
 public class ControllerKeybind {
 	private long bitmask;

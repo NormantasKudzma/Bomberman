@@ -21,6 +21,23 @@ public class Game {
 		
 	}
 	
+	/** Game destruction method. This method will be called last.
+	 *  Any resources that must be released, should be released here.
+	 */
+	public void destroy(){
+		//stub
+	}
+	
+	/** Game initialization (creating entities, loading map etc.) goes here
+	 * 
+	 */
+	public void init(){
+		//stub
+	}
+	
+	/** Render method - call render for each and every entity
+	 * 
+	 */
 	public void render(){
 		//physicsWorld.drawDebugData();
 		
@@ -29,6 +46,10 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * Main game update method. Physics and entities should be moved during update.
+	 * @param deltaTime - time that has passed since last frame (in ms)
+	 */
 	public void update(float deltaTime){
 		// Update physics
 		physicsWorld.getWorld().step(deltaTime, NUM_VELOCITY_ITERATIONS, NUM_POSITION_ITERATIONS);

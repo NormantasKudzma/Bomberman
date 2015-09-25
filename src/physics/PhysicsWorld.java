@@ -2,6 +2,7 @@ package physics;
 
 import game.Entity;
 
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
@@ -12,7 +13,7 @@ public class PhysicsWorld {
 	private World world;
 	
 	private PhysicsWorld(){
-		
+		world = new World(new Vec2());
 	}
 	
 	public static PhysicsWorld getInstance(){

@@ -1,25 +1,19 @@
 package game;
 
 import graphics.Sprite2D;
-
-import org.jbox2d.dynamics.Body;
-
 import physics.ICollidable;
+import physics.PhysicsBody;
 import physics.PhysicsWorld;
 import utils.Vector2;
 
 public abstract class Entity implements ICollidable {	
 	private Sprite2D sprite;
-	private Body body;
+	private PhysicsBody body;
 	private boolean toBeDestroyed;
-	
-	// Internals
-	private Vector2 bodyPosition = new Vector2();
-	private float bodyRotation;
-	private Vector2 bodyScale = new Vector2();
 	
 	public Entity(){
 		toBeDestroyed = false;
+		initEntity();
 	}
 
 	public void addSprite(String path){
@@ -27,19 +21,19 @@ public abstract class Entity implements ICollidable {
 	}
 	
 	public void destroy(){
-		//stub
+		body.destroyBody();
 	}
 	
 	public Vector2 getPosition(){
-		return bodyPosition;
+		return body.getPosition();
 	}
 	
 	public float getRotation(){
-		return bodyRotation;
+		return body.getRotation();
 	}
 	
 	public Vector2 getScale(){
-		return bodyScale;
+		return body.getScale();
 	}
 	
 	public Sprite2D getSprite(){
@@ -51,6 +45,10 @@ public abstract class Entity implements ICollidable {
 		// TODO Auto-generated method stub		
 	}
 	
+	protected void initEntity(){
+		body = PhysicsWorld.getInstance().getNewBody(this);
+	}
+	
 	public boolean isDestroyed(){
 		return toBeDestroyed;
 	}
@@ -60,18 +58,15 @@ public abstract class Entity implements ICollidable {
 	}
 	
 	public void setPosition(Vector2 pos){
-		bodyPosition = pos;
-		body.setTransform(Vector2.toVec2(pos), bodyRotation);
+		body.setPosition(pos);
 	}
 	
 	public void setPosition(float x, float y){
-		bodyPosition.set(x, y);
-		setPosition(bodyPosition);
+		body.setPosition(x, y);
 	}
 	
 	public void setRotation(float angle){
-		bodyRotation = angle;
-		body.setTransform(Vector2.toVec2(bodyPosition), angle);
+		body.setRotation(angle);
 	}
 	
 	/**
@@ -80,7 +75,7 @@ public abstract class Entity implements ICollidable {
 	 * @param scale - desired sprite scale
 	 */
 	public void setScale(Vector2 scale){
-		bodyScale = scale;
+		body.setScale(scale);
 	}
 	
 	public void setSprite(Sprite2D spr){
@@ -88,7 +83,7 @@ public abstract class Entity implements ICollidable {
 	}
 	
 	public void render(){
-		sprite.render(bodyPosition, bodyRotation, bodyScale);
+		sprite.render(body.getPosition(), body.getRotation(), body.getScale());
 	}
 	
 	public abstract void update(float deltaTime);

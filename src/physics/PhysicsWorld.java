@@ -24,16 +24,12 @@ public class PhysicsWorld {
 		return world;
 	}
 	
-	public Body getBodyFromDef(BodyDef def){
-		return world.createBody(def);
+	public PhysicsBody getBodyFromDef(BodyDef def){
+		return new PhysicsBody(def);
 	}
 	
-	public Body getNewBody(Entity e){
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.allowSleep = true;
-		bodyDef.type = BodyType.DYNAMIC;
-		bodyDef.userData = e;
-		return world.createBody(bodyDef);
+	public PhysicsBody getNewBody(Entity e){
+		return new PhysicsBody(e);
 	}
 	
 	public BodyDef getRawBodyDef(){

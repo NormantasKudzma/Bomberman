@@ -30,7 +30,7 @@ public class PhysicsBody {
 	// Internal variables for faster getters
 	private Vector2 bodyPosition = new Vector2();
 	private float bodyRotation;
-	private Vector2 bodyScale = new Vector2();
+	private Vector2 bodyScale = new Vector2(1.0f, -1.0f);
 	
 	/**
 	 * Creates a body with default settings.
@@ -146,6 +146,7 @@ public class PhysicsBody {
 	 * @param scale - desired sprite scale
 	 */
 	public void setScale(Vector2 scale){
+		scale.setY(-scale.y());
 		bodyScale = scale;
 	}
 }

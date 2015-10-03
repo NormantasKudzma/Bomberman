@@ -9,6 +9,7 @@ import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
+import utils.Vector2;
 import controls.AbstractController;
 import controls.ControllerEventListener;
 import controls.ControllerManager;
@@ -110,7 +111,7 @@ public class BombermanMain {
         	GL11.glLoadIdentity();
         	
         	// Render game and swap buffers
-        	game.render();       	
+        	game.render();
         	GLFW.glfwSwapBuffers(windowHandle);
         	
         	// Calculate difference between frame start and frame end and set thread to sleep

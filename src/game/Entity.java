@@ -42,7 +42,7 @@ public abstract class Entity implements ICollidable {
 	
 	@Override
 	public void handleCollision() {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 	
 	protected void initEntity(){

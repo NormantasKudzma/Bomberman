@@ -32,7 +32,18 @@ public class Game {
 	 * 
 	 */
 	public void init(){
-		//stub
+		Entity e = new Entity(){
+
+			@Override
+			public void update(float deltaTime) {
+			}
+			
+		};
+		e.setPosition(0, 0);
+		e.addSprite("smetona.jpg");
+		e.initEntity();
+		
+		entityList.add(e);
 	}
 	
 	/** Render method - call render for each and every entity

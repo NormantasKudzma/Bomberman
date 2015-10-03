@@ -1,5 +1,10 @@
 package game;
 
+import static org.lwjgl.opengl.GL11.GL_CLAMP;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
 import graphics.Sprite2D;
 
 import java.nio.ByteBuffer;
@@ -15,7 +20,7 @@ import controls.ControllerEventListener;
 import controls.ControllerManager;
 import controls.EController;
 
-public class BombermanMain {
+public class Main {
 	private static final int TARGET_FPS = 60;
 	private static final long SLEEP_DELTA = 1000 / TARGET_FPS;	// Maximum sleep time between frames
 	private static final long SLEEP_MIN = 5;					// Absolute minimum sleep time between frames (if too slow render)
@@ -68,6 +73,9 @@ public class BombermanMain {
         GLFW.glfwSwapInterval(1);
         GLContext.createFromCurrent();
         GLFW.glfwShowWindow(windowHandle);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
         
         // Create and initialize game
         game = new Game();
@@ -139,6 +147,6 @@ public class BombermanMain {
 	}
 
 	public static void main(String [] args){
-		new BombermanMain().run();
+		new Main().run();
 	}
 }

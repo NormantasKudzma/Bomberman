@@ -42,6 +42,11 @@ public class Vector2 {
 		this.y = y;
 	}
 	
+	public void add(float x, float y){
+		this.x += x;
+		this.y += y;
+	}
+	
 	public void add(Vector2 i){
 		this.x += i.x;
 		this.y += i.y;

@@ -9,7 +9,10 @@ import utils.Vector2;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Sprite2D implements IRenderable {
+	private static final float DEFAULT_SPRITE_SIZE = 0.0625f;
+	
 	private Texture texture;	// Sprite's texture
+	private Vector2 internalScale = new Vector2(1.0f, 1.0f);	// Sprite size in game units (0;0)->(2;2)
 
 	public Sprite2D(){}
 	
@@ -20,12 +23,10 @@ public class Sprite2D implements IRenderable {
 	public void loadTexture(String path){
 		try {
 			texture = TextureLoader.getInstance().getTexture(path);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			internalScale.set(DEFAULT_SPRITE_SIZE / texture.getWidth(), DEFAULT_SPRITE_SIZE / texture.getHeight());
 		}
 		catch (IOException e){
 			e.printStackTrace();
-			System.exit(-1);
 		}
 	}
 	
@@ -46,10 +47,10 @@ public class Sprite2D implements IRenderable {
         texture.bind();
  
         // translate to the right location and prepare to draw
-        glTranslatef(position.x(), position.y(), 0);
-        glRotatef(rotation, 0, 0, 1.0f);
-        
+        glTranslatef(position.x() - 1.0f, -position.y() + 1.0f, 0);        
         glScalef(scale.x(), scale.y(), 1.0f);
+        glScalef(internalScale.x(), internalScale.y(), 1.0f);
+        glRotatef(rotation, 0, 0, 1.0f);
  
         // draw a quad textured to match the sprite
         glBegin(GL_QUADS);

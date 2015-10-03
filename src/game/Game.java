@@ -2,12 +2,7 @@ package game;
 
 import java.util.ArrayList;
 
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.World;
-
 import physics.PhysicsWorld;
-
-import utils.Vector2;
 
 public class Game {
 	private static final int NUM_VELOCITY_ITERATIONS = 2;
@@ -36,6 +31,7 @@ public class Game {
 
 			@Override
 			public void update(float deltaTime) {
+				//getPosition().add(0.0002f, 0.0002f);
 			}
 			
 		};

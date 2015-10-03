@@ -46,7 +46,9 @@ public abstract class Entity implements ICollidable {
 	}
 	
 	protected void initEntity(){
-		body = PhysicsWorld.getInstance().getNewBody(this);
+		if (body == null){
+			body = PhysicsWorld.getInstance().getNewBody(this);
+		}
 	}
 	
 	public boolean isDestroyed(){

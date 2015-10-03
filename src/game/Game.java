@@ -1,6 +1,10 @@
 package game;
 
+import graphics.PhysicsDebugDraw;
+
 import java.util.ArrayList;
+
+import org.jbox2d.common.OBBViewportTransform;
 
 import physics.PhysicsWorld;
 
@@ -13,7 +17,7 @@ public class Game {
 	private PhysicsWorld physicsWorld = PhysicsWorld.getInstance();
 	
 	public Game(){
-		
+		physicsWorld.setDebugDraw(new PhysicsDebugDraw(new OBBViewportTransform()));
 	}
 	
 	/** Game destruction method. This method will be called last.

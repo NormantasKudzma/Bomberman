@@ -2,6 +2,7 @@ package physics;
 
 import game.Entity;
 
+import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -35,5 +36,13 @@ public class PhysicsWorld {
 	
 	public BodyDef getRawBodyDef(){
 		return new BodyDef();
+	}
+
+	public void setDebugDraw(DebugDraw debugDraw){
+		int debugFlags = 0x0;
+		debugFlags |= DebugDraw.e_shapeBit;
+		debugDraw.setFlags(debugFlags);
+		
+		world.setDebugDraw(debugDraw);
 	}
 }

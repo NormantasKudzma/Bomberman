@@ -27,7 +27,6 @@ public class PhysicsDebugDraw extends DebugDraw{
 	
 	public PhysicsDebugDraw(IViewportTransform viewport) {
 		super(viewport);
-		// stub, išsiaiškint, kas čia vyksta
 		
 		try {
 			InputStream is = new FileInputStream(new File(Paths.FONTS + FONT_NAME));

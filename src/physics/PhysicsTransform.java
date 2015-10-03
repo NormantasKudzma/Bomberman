@@ -3,6 +3,8 @@ package physics;
 import org.jbox2d.common.IViewportTransform;
 import org.jbox2d.common.Vec2;
 
+// jei OBBViewportTransform tinka, tai šito nereik
+@Deprecated
 public class PhysicsTransform implements IViewportTransform{
 
 	@Override
@@ -21,14 +23,28 @@ public class PhysicsTransform implements IViewportTransform{
 		
 	}
 
+	/**
+     * takes the screen coordinates (argScreen) and puts the
+     * corresponding world coordinates in argWorld. It should be safe
+     * to give the same object as both parameters.
+     * @param argScreen
+     * @param argWorld
+     */
 	@Override
-	public void getScreenVectorToWorld(Vec2 arg0, Vec2 arg1) {
+	public void getScreenVectorToWorld(Vec2 argScreen, Vec2 argWorld) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+     * takes the world coordinate (argWorld) puts the corresponding
+     * screen coordinate in argScreen.  It should be safe to give the
+     * same object as both parameters.
+     * @param argWorld
+     * @param argScreen
+     */
 	@Override
-	public void getWorldToScreen(Vec2 arg0, Vec2 arg1) {
+	public void getWorldToScreen(Vec2 argWorld, Vec2 argScreen) {
 		// TODO Auto-generated method stub
 		
 	}

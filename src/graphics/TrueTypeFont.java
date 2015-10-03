@@ -18,6 +18,9 @@ import java.awt.GraphicsEnvironment;
  
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL41;
 import org.lwjgl.util.glu.GLU;
  
  
@@ -417,15 +420,13 @@ public class TrueTypeFont {
                                         .put(((DataBufferByte)(bufferedImage.getData().getDataBuffer())).getData());
             }
             byteBuffer.flip();
-             
-             
+                       
             int internalFormat = GL11.GL_RGBA8,
             format = GL11.GL_RGBA;
-            IntBuffer   textureId =  BufferUtils.createIntBuffer(1);;
+            IntBuffer   textureId =  BufferUtils.createIntBuffer(1);
             GL11.glGenTextures(textureId);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId.get(0));
-             
- 
+              
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
              
@@ -433,16 +434,16 @@ public class TrueTypeFont {
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
              
             GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-             
-             
-             
-            GLU.gluBuild2DMipmaps(GL11.GL_TEXTURE_2D,
+                         
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_GENERATE_MIPMAP, GL11.GL_TRUE);
+            GL11.glTexParameteri (GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, 3);
+            /*GLU.gluBuild2DMipmaps(GL11.GL_TEXTURE_2D,
                   internalFormat,
                   width,
                   height,
                   format,
                   GL11.GL_UNSIGNED_BYTE,
-                  byteBuffer);
+                  byteBuffer);*/
             return textureId.get(0);
              
         } catch (Exception e) {

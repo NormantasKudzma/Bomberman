@@ -3,7 +3,6 @@ package graphics;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 
@@ -92,6 +91,11 @@ public class PhysicsDebugDraw extends DebugDraw{
 		    GL11.glVertex2f(MathUtils.cos(angle), MathUtils.sin(angle));
 		}
 		GL11.glEnd();
+		
+		GL11.glBegin(GL11.GL_LINE);
+	    GL11.glVertex2f(pos.x, pos.y);
+	    GL11.glVertex2f(pos.x + axis.x * radius, pos.y + axis.y * radius);
+		GL11.glEnd();
 
 		GL11.glPopMatrix();
 	}
@@ -128,7 +132,29 @@ public class PhysicsDebugDraw extends DebugDraw{
 
 	@Override
 	public void drawTransform(Transform xf) {
-		// TODO Auto-generated method stub
 		// wtf?
+		
+		Vec2 temp = new Vec2();
+		Vec2 temp2 = new Vec2();
+	    getWorldToScreenToOut(xf.p, temp);
+	    temp2.setZero();
+	    float k_axisScale = 0.4f;
+
+	    GL11.glBegin(GL11.GL_LINES);
+	    GL11.glColor3f(1, 0, 0);
+
+	    temp2.x = xf.p.x + k_axisScale * xf.q.c;
+	    temp2.y = xf.p.y + k_axisScale * xf.q.s;
+	    getWorldToScreenToOut(temp2, temp2);
+	    GL11.glVertex2f(temp.x, temp.y);
+	    GL11.glVertex2f(temp2.x, temp2.y);
+
+	    GL11.glColor3f(0, 1, 0);
+	    temp2.x = xf.p.x + -k_axisScale * xf.q.s;
+	    temp2.y = xf.p.y + k_axisScale * xf.q.c;
+	    getWorldToScreenToOut(temp2, temp2);
+	    GL11.glVertex2f(temp.x, temp.y);
+	    GL11.glVertex2f(temp2.x, temp2.y);
+	    GL11.glEnd();
 	}
 }

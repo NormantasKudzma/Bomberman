@@ -21,12 +21,6 @@ public class Vector2 {
 		this.y = y;
 	}
 	
-	public Vector2 fromVec2(Vec2 v){
-		x = v.x;
-		y = v.y;
-		return this;
-	}
-	
 	public float x(){
 		return x;
 	}
@@ -58,11 +52,16 @@ public class Vector2 {
 		this.y -= i.y;
 	}
 	
+	public Vec2 toVec2()
+	{
+		return toVec2(this);
+	}
+	
 	public static Vector2 add(Vector2 i, Vector2 j){
 		return new Vector2(i.x + j.x, i.y + j.y);
 	}
 
-	public static Vector2 fromVec2(Vector2 v){
+	public static Vector2 fromVec2(Vec2 v){
 		return new Vector2(v.x, v.y);
 	}
 	

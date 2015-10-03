@@ -2,9 +2,19 @@ package physics;
 
 import game.Entity;
 
+import java.util.ArrayList;
+
+import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.collision.shapes.Shape;
+import org.jbox2d.common.Rot;
+import org.jbox2d.common.Transform;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Fixture;
+import org.jbox2d.dynamics.FixtureDef;
 
 import utils.Vector2;
 
@@ -15,6 +25,7 @@ import utils.Vector2;
  */
 public class PhysicsBody {
 	private Body body;
+	private ArrayList<Fixture> fixtureList = new ArrayList<Fixture>(1);
 	
 	// Internal variables for faster getters
 	private Vector2 bodyPosition = new Vector2();
@@ -43,6 +54,46 @@ public class PhysicsBody {
 	public PhysicsBody(BodyDef def){
 		createBody(def, null);
 	}
+		
+	public void attachBoxCollider(Vector2 size, Vector2 position, float rotation){		
+		PolygonShape polygon = new PolygonShape();
+		polygon.setAsBox(size.x(), size.y());
+		if (position != null){
+			polygon.centroid(new Transform(position.toVec2(), new Rot(rotation)));
+		}
+		
+		attachCollider(polygon);
+	}
+	
+	public void attachCircleCollider(float radius, Vector2 position){
+		CircleShape circle = new CircleShape();
+		circle.setRadius(radius);
+		if (position != null){
+			circle.m_p.set(position.toVec2());
+		}
+		
+		attachCollider(circle);
+	}
+	
+	public void attachPolygonCollider(Vector2 [] vertices){
+		Vec2 [] vec2Verts = new Vec2[vertices.length];
+		for (int i = 0; i < vertices.length; i++){
+			vec2Verts[i] = vertices[i].toVec2();
+		}
+		
+		PolygonShape polygon = new PolygonShape();
+		polygon.set(vec2Verts, vec2Verts.length);
+		
+		attachCollider(polygon);
+	}
+	
+	private void attachCollider(Shape shape){
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = shape;
+		fixtureDef.userData = this;
+
+		fixtureList.add(body.createFixture(fixtureDef));
+	}
 	
 	private void createBody(BodyDef def, Entity e){
 		if (def == null){
@@ -55,6 +106,9 @@ public class PhysicsBody {
 	}
 	
 	public void destroyBody(){
+		for (Fixture i : fixtureList){
+			body.destroyFixture(i);
+		}
 		PhysicsWorld.getInstance().getWorld().destroyBody(body);
 		body = null;
 	}

@@ -15,7 +15,11 @@ public abstract class AbstractController implements IController{
 	protected ControllerKeybind oneClickCallback;
 	
 	public void addKeybind(long bitmask, ControllerEventListener callback){
-		keyBindings.add(new ControllerKeybind(bitmask, callback));
+		addKeybind(new ControllerKeybind(bitmask, callback));
+	}
+	
+	public void addKeybind(ControllerKeybind keybind){
+		keyBindings.add(keybind);
 	}
 	
 	public ControllerKeybind clearKeybind(long bitmask){

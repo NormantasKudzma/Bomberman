@@ -125,7 +125,7 @@ public class Main {
 			ControllerManager.getInstance().pollControllers();
 
 			// Update game logic
-			game.update(deltaTime);
+			game.update(deltaTime * 0.001f);
 
 			// Prepare for rendering
 			GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

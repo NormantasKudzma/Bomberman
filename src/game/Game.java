@@ -31,16 +31,14 @@ public class Game {
 	 * 
 	 */
 	public void init(){
-		PlayerEntity p = new PlayerEntity();
 		Entity e = new Entity(){
 
 			@Override
 			public void update(float deltaTime) {
-				getPosition().add(0.0002f, 0.0002f);
+				//getPosition().add(0.0002f, 0.0002f);
 			}
 			
 		};
-		p.readKeybindings();
 		e.setPosition(0, 0);
 		e.addSprite("smetona.jpg");
 		e.initEntity();

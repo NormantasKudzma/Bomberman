@@ -11,6 +11,8 @@ import org.usb4java.DeviceList;
 import org.usb4java.LibUsb;
 import org.usb4java.LibUsbException;
 
+import utils.Paths;
+
 public class ControllerManager{
 	public static class ProductVendor {
 		private short product;
@@ -30,7 +32,7 @@ public class ControllerManager{
 		}
 	}
 	
-	private static final String DEFAULT_USB_PRODUCT_VENDOR_FILE = "config\\AllowedDevices.dat";
+	private static final String DEFAULT_USB_PRODUCT_VENDOR_FILE = "AllowedDevices.dat";
 	private static final ControllerManager INSTANCE = new ControllerManager();
 	
 	private ArrayList<ProductVendor> allowedUsbProductVendorList;
@@ -69,7 +71,7 @@ public class ControllerManager{
 		}
 		if (allowedUsbProductVendorList == null){
 			allowedUsbProductVendorList = new ArrayList<ProductVendor>();
-			loadAllowedUsbDeviceList(DEFAULT_USB_PRODUCT_VENDOR_FILE);
+			loadAllowedUsbDeviceList(Paths.CONFIGS + DEFAULT_USB_PRODUCT_VENDOR_FILE);
 		}
 		
 		for (Device device : usbDeviceList){
@@ -109,7 +111,7 @@ public class ControllerManager{
 						throw new LibUsbException("Unable to initialize libusb.", result);		
 					}
 					
-					loadAllowedUsbDeviceList(DEFAULT_USB_PRODUCT_VENDOR_FILE);
+					loadAllowedUsbDeviceList(Paths.CONFIGS + DEFAULT_USB_PRODUCT_VENDOR_FILE);
 					loadUsbDevices();
 					filterUsbDevices();
 					
@@ -141,10 +143,14 @@ public class ControllerManager{
 	}
 	
 	public void loadAllowedUsbDeviceList(String path){
+		if (path == null){
+			return;
+		}
+		
 		allowedUsbProductVendorList = new ArrayList<ProductVendor>();
 		
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(path == null ? DEFAULT_USB_PRODUCT_VENDOR_FILE : path));
+			BufferedReader br = new BufferedReader(new FileReader(path));
 			String line;
 			while ((line = br.readLine()) != null){
 				if (line.isEmpty() || line.startsWith("#")){

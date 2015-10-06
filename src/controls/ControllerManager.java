@@ -11,7 +11,6 @@ import org.usb4java.DeviceList;
 import org.usb4java.LibUsb;
 import org.usb4java.LibUsbException;
 
-
 import utils.Paths;
 
 public class ControllerManager{
@@ -72,9 +71,7 @@ public class ControllerManager{
 		}
 		if (allowedUsbProductVendorList == null){
 			allowedUsbProductVendorList = new ArrayList<ProductVendor>();
-
 			loadAllowedUsbDeviceList(Paths.CONFIGS + DEFAULT_USB_PRODUCT_VENDOR_FILE);
-
 		}
 		
 		for (Device device : usbDeviceList){
@@ -113,6 +110,7 @@ public class ControllerManager{
 					if (result != LibUsb.SUCCESS){
 						throw new LibUsbException("Unable to initialize libusb.", result);		
 					}
+					
 					loadAllowedUsbDeviceList(Paths.CONFIGS + DEFAULT_USB_PRODUCT_VENDOR_FILE);
 					loadUsbDevices();
 					filterUsbDevices();

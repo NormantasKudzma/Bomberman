@@ -1,7 +1,6 @@
 package controls;
 
 public enum EController {
-
 	INVALIDCONTROLLER,
 	USBCONTROLLER,
 	LWJGLKEYBOARDCONTROLLER;
@@ -16,5 +15,4 @@ public enum EController {
 		
 		return INVALIDCONTROLLER;
 	}
-
 }

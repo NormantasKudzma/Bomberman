@@ -76,6 +76,8 @@ public class Main {
 		if (windowHandle == 0) {
 			throw new RuntimeException("Failed to create the GLFW window");
 		}
+		
+		ControllerManager.getInstance().setWindowHandle(windowHandle);
 
 		ByteBuffer vidmode = GLFW
 				.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
@@ -98,7 +100,7 @@ public class Main {
 		AbstractController keyboard = ControllerManager.getInstance()
 				.getController(EController.LWJGLKEYBOARDCONTROLLER);
 		keyboard.addKeybind(GLFW.GLFW_KEY_ESCAPE, new K1());
-		keyboard.startController(windowHandle);
+		keyboard.startController();
 
 		AbstractController nintendo = ControllerManager.getInstance()
 				.getController(EController.USBCONTROLLER);

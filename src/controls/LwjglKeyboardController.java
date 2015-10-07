@@ -37,14 +37,13 @@ public class LwjglKeyboardController extends AbstractController{
 		GLFW.glfwPollEvents();
 	}
 	
+	public void setWindowHandle(long windowHandle){
+		this.windowHandle = windowHandle;
+		GLFW.glfwSetKeyCallback(windowHandle, glfwCallback);
+	}
+	
 	@Override
-	public void startController(long window) {
-		if (window != 0){
-			windowHandle = window;
-			GLFW.glfwSetKeyCallback(window, glfwCallback);
-		}
-		else {
-			System.err.println("LWJGLKEYBOARDCONTROLLER::START_CONTROLLER, windowhandle must not be 0");
-		}
+	public void startController() {
+		//stub
 	}
 }

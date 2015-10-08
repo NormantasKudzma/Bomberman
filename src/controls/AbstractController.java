@@ -64,11 +64,7 @@ public abstract class AbstractController implements IController{
 		defaultCallback = new ControllerKeybind(-1, callback);
 	}
 	
-	public void startController(){
-		startController(0);
-	}
-	
-	public abstract void startController(long window);
+	public abstract void startController();
 	
 	public void stopController(){
 		if (isStopped){

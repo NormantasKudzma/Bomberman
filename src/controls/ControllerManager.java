@@ -35,12 +35,13 @@ public class ControllerManager{
 	private static final String DEFAULT_USB_PRODUCT_VENDOR_FILE = "AllowedDevices.dat";
 	private static final ControllerManager INSTANCE = new ControllerManager();
 	
+	private ArrayList<AbstractController> allControllers = new ArrayList<AbstractController>();
 	private ArrayList<ProductVendor> allowedUsbProductVendorList;
-	private ArrayList<UsbController> usbControllerList;
-	private DeviceList usbDeviceList;
 	private Context libUsbContext;
 	private LwjglKeyboardController lwjglKeyboardController;
-	private ArrayList<AbstractController> allControllers = new ArrayList<AbstractController>();
+	private ArrayList<UsbController> usbControllerList;
+	private DeviceList usbDeviceList;
+	private long windowHandleMain = -1;
 	
 	private ControllerManager(){
 		
@@ -99,6 +100,7 @@ public class ControllerManager{
 			case LWJGLKEYBOARDCONTROLLER:{
 				if (lwjglKeyboardController == null){
 					lwjglKeyboardController = new LwjglKeyboardController();
+					lwjglKeyboardController.setWindowHandle(windowHandleMain);
 					allControllers.add(lwjglKeyboardController);
 				}
 				return lwjglKeyboardController;
@@ -206,5 +208,9 @@ public class ControllerManager{
 			System.out.print(deviceListStringBuilder.toString());
 		}
 		return deviceListStringBuilder.toString();
+	}
+
+	public void setWindowHandle(long handle){
+		windowHandleMain = handle;
 	}
 }

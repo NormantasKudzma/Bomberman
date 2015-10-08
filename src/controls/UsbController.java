@@ -65,7 +65,7 @@ public class UsbController extends AbstractController{
 		return productVendor;
 	}
 	
-	public void startController(long window){
+	public void startController(){
 		if (isStopped){
 			return;
 		}

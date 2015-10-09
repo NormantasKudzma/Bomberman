@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import org.jbox2d.common.OBBViewportTransform;
 
 import physics.PhysicsWorld;
+import utils.Paths;
 
 public class Game {
 	private static final int NUM_VELOCITY_ITERATIONS = 2;
@@ -40,7 +41,7 @@ public class Game {
 			
 		};
 		e.setPosition(0, 0);
-		e.addSprite("smetona.jpg");
+		e.addSprite(Paths.TEXTURES + "smetona.jpg");
 		e.initEntity();
 		
 		entityList.add(e);

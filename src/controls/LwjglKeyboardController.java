@@ -39,11 +39,10 @@ public class LwjglKeyboardController extends AbstractController{
 	
 	public void setWindowHandle(long windowHandle){
 		this.windowHandle = windowHandle;
-		GLFW.glfwSetKeyCallback(windowHandle, glfwCallback);
 	}
 	
 	@Override
 	public void startController() {
-		//stub
+		GLFW.glfwSetKeyCallback(windowHandle, glfwCallback);
 	}
 }

@@ -35,7 +35,6 @@ public class Main {
 	private Game game;
 	private long t0, t1; // Frame start (t0) and frame end (t1) time
 	private long windowHandle;
-	private Sprite2D sprite;
 
 	class K1 implements ControllerEventListener {
 
@@ -111,8 +110,6 @@ public class Main {
 		} else {
 			System.out.println("Nintendo controller is null");
 		}
-
-		sprite = new Sprite2D("smetona.jpg");
 	}
 
 	private void loop() {

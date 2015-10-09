@@ -4,7 +4,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
 public class LwjglKeyboardController extends AbstractController{
-	private GLFWKeyCallback glfwCallback;	
+	private GLFWKeyCallback glfwCallback;
 	private long windowHandle;
 	
 	public LwjglKeyboardController(){
@@ -20,7 +20,7 @@ public class LwjglKeyboardController extends AbstractController{
 				}
 				
 				for (ControllerKeybind bind : keyBindings){
-					if ((bind.getBitmask() & key) != 0){
+					if ((bind.getBitmask() ^ key) == 0){
 						bind.getCallback().handleEvent(key);
 					}
 				}

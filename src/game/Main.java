@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
+import utils.Paths;
 import utils.Vector2;
 import controls.AbstractController;
 import controls.ControllerEventListener;

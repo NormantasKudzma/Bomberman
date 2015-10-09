@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import org.jbox2d.common.OBBViewportTransform;
 
 import physics.PhysicsWorld;
+import utils.Paths;
 
 public class Game {
 	private static final int NUM_VELOCITY_ITERATIONS = 2;
@@ -31,7 +32,7 @@ public class Game {
 	 * 
 	 */
 	public void init(){
-		//PlayerEntity p = new PlayerEntity(); 
+		PlayerEntity p = new PlayerEntity(); 
 		Entity e = new Entity(){
 
 			@Override
@@ -40,14 +41,14 @@ public class Game {
 			}
 			
 		};
-		//p.readKeybindings();
-		//p.addSprite("smetona.jpg");
-		//p.setPosition(1, 1);
-		//p.initEntity();
+		p.readKeybindings();
+		p.addSprite("smetona.jpg");
+		p.setPosition(1, 1);
+		p.initEntity();
 		e.setPosition(0, 0);
 		e.addSprite("smetona.jpg");
 		e.initEntity();
-		//entityList.add(p);
+		entityList.add(p);
 		entityList.add(e);
 	}
 	

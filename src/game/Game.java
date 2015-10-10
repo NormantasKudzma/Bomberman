@@ -46,7 +46,7 @@ public class Game {
 		p.setPosition(1, 1);
 		p.initEntity();
 		e.setPosition(0, 0);
-		e.addSprite(Paths.TEXTURES + "smetona.jpg");
+		e.addSprite("smetona.jpg");
 		e.initEntity();
 		entityList.add(p);
 		entityList.add(e);

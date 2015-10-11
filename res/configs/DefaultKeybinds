@@ -1,4 +1,5 @@
-265 = moveUp
-264 = moveDown
-263 = moveLeft
-262 = moveRight
+PLAYER1=LWJGLKEYBOARDCONTROLLER
+265=moveUp
+264=moveDown
+263=moveLeft
+262=moveRight

@@ -42,11 +42,11 @@ public class Game {
 			
 		};
 		p.readKeybindings();
-		p.addSprite("smetona.jpg");
+		p.addSprite(Paths.TEXTURES + "smetona.jpg");
 		p.setPosition(1, 1);
 		p.initEntity();
 		e.setPosition(0, 0);
-		e.addSprite("smetona.jpg");
+		e.addSprite(Paths.TEXTURES + "smetona.jpg");
 		e.initEntity();
 		entityList.add(p);
 		entityList.add(e);

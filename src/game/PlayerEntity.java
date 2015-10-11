@@ -5,9 +5,6 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-
 import controls.AbstractController;
 import controls.ControllerEventListener;
 import controls.ControllerKeybind;
@@ -19,7 +16,7 @@ import utils.Vector2;
 public class PlayerEntity extends Entity {
 	private Vector2 moveDirection;
 	private AbstractController keyboard;
-	private java.lang.reflect.Method method, metodas;
+	private java.lang.reflect.Method method;
 	private long s;
 
 	@Override
@@ -32,7 +29,6 @@ public class PlayerEntity extends Entity {
 	public void readKeybindings(){
 		keyboard = ControllerManager.getInstance()
 			    .getController(EController.LWJGLKEYBOARDCONTROLLER);
-		keyboard.startController();
 		Scanner sc2 = null;
 	    try {
 	        sc2 = new Scanner(new File(Paths.CONFIGS + "DefaultKeybinds"));
@@ -61,7 +57,7 @@ public class PlayerEntity extends Entity {
 	        }
 	        keyboard.addKeybind(new ControllerKeybind(s, new K1(method, this)));
 	    }
-	    
+	    keyboard.startController();
 	}
 	public void moveUp(){
 		moveDirection.setY(0.0002f);

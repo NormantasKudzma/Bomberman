@@ -11,32 +11,16 @@ import org.usb4java.DeviceList;
 import org.usb4java.LibUsb;
 import org.usb4java.LibUsbException;
 
+import utils.ConfigManager;
+import utils.ConfigManager.Config;
+import utils.Pair;
 import utils.Paths;
 
-public class ControllerManager{
-	public static class ProductVendor {
-		private short product;
-		private short vendor;
-		
-		public ProductVendor(short p, short v){
-			product = p;
-			vendor = v;
-		}
-		
-		public short getProduct(){
-			return product;
-		}
-		
-		public short getVendor(){
-			return vendor;
-		}
-	}
-	
-	private static final String DEFAULT_USB_PRODUCT_VENDOR_FILE = "AllowedDevices.dat";
+public class ControllerManager{	
 	private static final ControllerManager INSTANCE = new ControllerManager();
 	
 	private ArrayList<AbstractController> allControllers = new ArrayList<AbstractController>();
-	private ArrayList<ProductVendor> allowedUsbProductVendorList;
+	private ArrayList<Pair<Short, Short>> allowedUsbProductVendorList;
 	private Context libUsbContext;
 	private LwjglKeyboardController lwjglKeyboardController;
 	private ArrayList<UsbController> usbControllerList;
@@ -71,8 +55,8 @@ public class ControllerManager{
 			usbControllerList = new ArrayList<UsbController>();
 		}
 		if (allowedUsbProductVendorList == null){
-			allowedUsbProductVendorList = new ArrayList<ProductVendor>();
-			loadAllowedUsbDeviceList(Paths.CONFIGS + DEFAULT_USB_PRODUCT_VENDOR_FILE);
+			allowedUsbProductVendorList = new ArrayList<Pair<Short, Short>>();
+			loadAllowedUsbDeviceList(Paths.ALLOWED_DEVICES);
 		}
 		
 		for (Device device : usbDeviceList){
@@ -82,8 +66,8 @@ public class ControllerManager{
 				throw new LibUsbException("Unable to read device descriptor", result);
 			}
 			
-			for (ProductVendor pair : allowedUsbProductVendorList){
-				if (descriptor.idProduct() == pair.getProduct() && descriptor.idVendor() == pair.getVendor()){
+			for (Pair<Short, Short> pair : allowedUsbProductVendorList){
+				if (descriptor.idProduct() == pair.key && descriptor.idVendor() == pair.value){
 					String bp = LibUsb.getBusNumber(device) + ":" + LibUsb.getPortNumber(device);
 					usbControllerList.add(new UsbController(bp, libUsbContext, device, pair));
 				}
@@ -113,7 +97,7 @@ public class ControllerManager{
 						throw new LibUsbException("Unable to initialize libusb.", result);		
 					}
 					
-					loadAllowedUsbDeviceList(Paths.CONFIGS + DEFAULT_USB_PRODUCT_VENDOR_FILE);
+					loadAllowedUsbDeviceList(Paths.ALLOWED_DEVICES);
 					loadUsbDevices();
 					filterUsbDevices();
 					
@@ -149,29 +133,10 @@ public class ControllerManager{
 			return;
 		}
 		
-		allowedUsbProductVendorList = new ArrayList<ProductVendor>();
-		
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(path));
-			String line;
-			while ((line = br.readLine()) != null){
-				if (line.isEmpty() || line.startsWith("#")){
-					continue;
-				}
-				
-				String [] params = line.split("=");
-				if (params.length != 2){
-					continue;
-				}
-				
-				short product = Short.parseShort(params[0].substring(params[0].length() - 4), 16);
-				short vendor = Short.parseShort(params[1].substring(params[1].length() - 4), 16);
-				allowedUsbProductVendorList.add(new ProductVendor(product, vendor));
-			}
-			br.close();
-		}
-		catch (Exception e){
-			e.printStackTrace();
+		allowedUsbProductVendorList = new ArrayList<Pair<Short, Short>>();		
+		Config<String, String> cfg = ConfigManager.getInstance().loadConfigAsPairs(Paths.ALLOWED_DEVICES);
+		for (Pair<String, String> pair : cfg.contents){
+			allowedUsbProductVendorList.add(new Pair<Short, Short>(Short.parseShort(pair.key, 16), Short.parseShort(pair.value, 16)));
 		}
 	}
 

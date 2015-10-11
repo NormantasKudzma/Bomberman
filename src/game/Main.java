@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
-import graphics.Sprite2D;
 
 import java.nio.ByteBuffer;
 
@@ -14,11 +13,7 @@ import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
-import utils.Vector2;
-import controls.AbstractController;
-import controls.ControllerEventListener;
 import controls.ControllerManager;
-import controls.EController;
 
 public class Main {
 	private static final int TARGET_FPS = 60;
@@ -36,15 +31,6 @@ public class Main {
 	private long t0, t1; // Frame start (t0) and frame end (t1) time
 	private long windowHandle;
 
-	class K1 implements ControllerEventListener {
-
-		@Override
-		public void handleEvent(long eventArg) {
-			GLFW.glfwSetWindowShouldClose(windowHandle, GL11.GL_TRUE);
-		}
-
-	}
-
 	private void destroy() {
 		game.destroy();
 
@@ -59,15 +45,12 @@ public class Main {
 		}
 
 		// Configure our window
-		GLFW.glfwDefaultWindowHints(); // optional, the current window hints are
-										// already the default
-		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_FALSE); // the window
-																// will stay
-																// hidden after
-																// creation
-		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_FALSE); // the window
-																	// will be
-																	// resizable
+		// optional, the current window hints are already the default
+		GLFW.glfwDefaultWindowHints(); 
+		// the window will stay hidden after creation
+		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_FALSE); 
+		// the window will be resizable
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_FALSE); 
 
 		// Create the window
 		windowHandle = GLFW.glfwCreateWindow(frameWidth, frameHeight,
@@ -75,7 +58,7 @@ public class Main {
 		if (windowHandle == 0) {
 			throw new RuntimeException("Failed to create the GLFW window");
 		}
-		
+
 		ControllerManager.getInstance().setWindowHandle(windowHandle);
 
 		ByteBuffer vidmode = GLFW
@@ -96,20 +79,18 @@ public class Main {
 		game = new Game();
 		game.init();
 
-		AbstractController keyboard = ControllerManager.getInstance()
-				.getController(EController.LWJGLKEYBOARDCONTROLLER);
-		keyboard.addKeybind(GLFW.GLFW_KEY_ESCAPE, new K1());
-		keyboard.startController();
-
-		AbstractController nintendo = ControllerManager.getInstance()
-				.getController(EController.USBCONTROLLER);
-		if (nintendo != null) {
-			nintendo.startController();
-			nintendo.addKeybind(
-					0xffffffff & ~nintendo.getDefaultBitmaskValue(), new K1());
-		} else {
-			System.out.println("Nintendo controller is null");
-		}
+		/*
+		 * AbstractController keyboard = ControllerManager.getInstance()
+		 * .getController(EController.LWJGLKEYBOARDCONTROLLER);
+		 * keyboard.addKeybind(GLFW.GLFW_KEY_ESCAPE, new K1());
+		 * keyboard.startController();
+		 * 
+		 * AbstractController nintendo = ControllerManager.getInstance()
+		 * .getController(EController.USBCONTROLLER); if (nintendo != null) {
+		 * nintendo.startController(); nintendo.addKeybind( 0xffffffff &
+		 * ~nintendo.getDefaultBitmaskValue(), new K1()); } else {
+		 * System.out.println("Nintendo controller is null"); }
+		 */
 	}
 
 	private void loop() {

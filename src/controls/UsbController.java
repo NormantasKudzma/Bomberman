@@ -139,6 +139,7 @@ public class UsbController extends AbstractController{
 				
 				if (oneClickCallback != null){
 					oneClickCallback.getCallback().handleEvent(bitmask);
+					oneClickCallback = null;
 				}
 				
 				for (ControllerKeybind bind : keyBindings){

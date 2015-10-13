@@ -55,7 +55,6 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -126,11 +125,9 @@ public class TextureLoader {
 	/**
 	 * Load a texture
 	 * 
-	 * @param resourceName
-	 *            The location of the resource to load
+	 * @param resourceName The location of the resource to load
 	 * @return The loaded texture
-	 * @throws IOException
-	 *             Indicates a failure to access the resource
+	 * @throws IOException Indicates a failure to access the resource
 	 */
 	public Texture getTexture(String resourceName) throws IOException {
 		Texture tex = table.get(resourceName);
@@ -152,19 +149,13 @@ public class TextureLoader {
 	/**
 	 * Load a texture into OpenGL from a image reference on disk.
 	 * 
-	 * @param resourceName
-	 *            The location of the resource to load
-	 * @param target
-	 *            The GL target to load the texture against
-	 * @param dstPixelFormat
-	 *            The pixel format of the screen
-	 * @param minFilter
-	 *            The minimising filter
-	 * @param magFilter
-	 *            The magnification filter
+	 * @param resourceName The location of the resource to load
+	 * @param target The GL target to load the texture against
+	 * @param dstPixelFormat The pixel format of the screen
+	 * @param minFilter The minimising filter
+	 * @param magFilter The magnification filter
 	 * @return The loaded texture
-	 * @throws IOException
-	 *             Indicates a failure to access the resource
+	 * @throws IOException Indicates a failure to access the resource
 	 */
 	public Texture getTexture(String resourceName, int target,
 			int dstPixelFormat, int minFilter, int magFilter)
@@ -208,8 +199,7 @@ public class TextureLoader {
 	/**
 	 * Get the closest greater power of 2 to the fold number
 	 * 
-	 * @param fold
-	 *            The target number
+	 * @param fold The target number
 	 * @return The power of 2
 	 */
 	private static int get2Fold(int fold) {
@@ -223,10 +213,8 @@ public class TextureLoader {
 	/**
 	 * Convert the buffered image to a texture
 	 * 
-	 * @param bufferedImage
-	 *            The image to convert to a texture
-	 * @param texture
-	 *            The texture to store the data into
+	 * @param bufferedImage The image to convert to a texture
+	 * @param texture The texture to store the data into
 	 * @return A buffer containing the data
 	 */
 	private ByteBuffer convertImageData(BufferedImage bufferedImage,
@@ -288,8 +276,7 @@ public class TextureLoader {
 	 * 
 	 * @param ref The location of the resource to load
 	 * @return The loaded buffered image
-	 * @throws IOException
-	 *             Indicates a failure to find a resource
+	 * @throws IOException Indicates a failure to find a resource
 	 */
 	private BufferedImage loadImage(String ref) throws IOException {
 		// due to an issue with ImageIO and mixed signed code

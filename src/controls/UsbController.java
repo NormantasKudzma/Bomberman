@@ -13,8 +13,6 @@ import org.usb4java.InterfaceDescriptor;
 import org.usb4java.LibUsb;
 import org.usb4java.LibUsbException;
 
-import com.sun.org.apache.xml.internal.utils.UnImplNode;
-
 import controls.ControllerManager.ProductVendor;
 
 public class UsbController extends AbstractController{

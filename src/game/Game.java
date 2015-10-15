@@ -8,7 +8,10 @@ import org.jbox2d.common.OBBViewportTransform;
 
 import physics.PhysicsWorld;
 import utils.Paths;
-
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 public class Game {
 	private static final int NUM_VELOCITY_ITERATIONS = 2;
 	private static final int NUM_POSITION_ITERATIONS = 4;
@@ -55,9 +58,56 @@ public class Game {
 	}
 	
 	public void initMap(){
+		final int mapSize = 33;
+		char[][] map = new char[mapSize][mapSize];		
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(Paths.MAPS + "map01"));
+			int i = 0; // array i index
+			int j = 0; // array j index
+			
+			int c = 0; 
+	        try {
+				while((c = reader.read()) != -1) {
+				    char character = (char) c;
+				    if(character == 'W' || character == ' '){
+				    	map[i][j] = character;
+				    	j++;
+				    }
+				    if(j == mapSize){
+				    	i++;
+				    	j = 0;	
+				    }				    
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(int i = 0; i < mapSize; i++)
+		{
+			for(int j = 0; j < mapSize; j++)
+			{
+				switch (map[i][j])
+				{
+					case 'W':
+						createWall(i, j);
+						break;
+					default:
+						break;
+				}
+				
+			}
+		}
+	
+	}
+	private void createWall(int i, int j){
 		WallEntity wall = new WallEntity();
 		wall.addSprite(Paths.TEXTURES + "wall.jpg");
-		wall.setPosition(1.94f, 1.94f);
+		wall.setPosition(i * 0.06f, j * 0.06f);
 		wall.initEntity();
 		entityList.add(wall);
 	}

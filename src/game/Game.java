@@ -31,7 +31,7 @@ public class Game {
 	/** Game initialization (creating entities, loading map etc.) goes here
 	 * 
 	 */
-	public void init(){
+	public void init(){		
 		PlayerEntity p = new PlayerEntity(); 
 		Entity e = new Entity(){
 
@@ -41,6 +41,7 @@ public class Game {
 			}
 			
 		};
+		initMap();
 		p.readKeybindings();
 		p.addSprite(Paths.TEXTURES + "smetona.jpg");
 		p.setPosition(1, 1);
@@ -50,6 +51,15 @@ public class Game {
 		e.initEntity();
 		entityList.add(p);
 		entityList.add(e);
+		
+	}
+	
+	public void initMap(){
+		WallEntity wall = new WallEntity();
+		wall.addSprite(Paths.TEXTURES + "wall.jpg");
+		wall.setPosition(1.94f, 1.94f);
+		wall.initEntity();
+		entityList.add(wall);
 	}
 	
 	/** Render method - call render for each and every entity

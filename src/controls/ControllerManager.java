@@ -1,7 +1,5 @@
 package controls;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 
 import org.usb4java.Context;
@@ -11,8 +9,8 @@ import org.usb4java.DeviceList;
 import org.usb4java.LibUsb;
 import org.usb4java.LibUsbException;
 
+import utils.Config;
 import utils.ConfigManager;
-import utils.ConfigManager.Config;
 import utils.Pair;
 import utils.Paths;
 
@@ -134,7 +132,7 @@ public class ControllerManager{
 		}
 		
 		allowedUsbProductVendorList = new ArrayList<Pair<Short, Short>>();		
-		Config<String, String> cfg = ConfigManager.getInstance().loadConfigAsPairs(Paths.ALLOWED_DEVICES);
+		Config<String, String> cfg = ConfigManager.loadConfigAsPairs(Paths.ALLOWED_DEVICES);
 		for (Pair<String, String> pair : cfg.contents){
 			allowedUsbProductVendorList.add(new Pair<Short, Short>(Short.parseShort(pair.key, 16), Short.parseShort(pair.value, 16)));
 		}

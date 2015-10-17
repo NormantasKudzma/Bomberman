@@ -10,7 +10,7 @@ public class Vector2 {
 	public static final Vector2 zero = new Vector2(0, 0);
 	public static final Vector2 one = new Vector2(1, 1);
 	
-	protected float x, y;
+	public float x, y;
 	
 	public Vector2(){
 		this(0, 0);

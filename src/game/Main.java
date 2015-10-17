@@ -101,9 +101,10 @@ public class Main {
 		GL11.glViewport(0, 0, frameWidth, frameHeight);
 		GL11.glEnable(GL11.GL_BLEND);
 	    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-	    t0 = System.currentTimeMillis();    
+   
 		while (GLFW.glfwWindowShouldClose(windowHandle) == GL11.GL_FALSE) {
+		    t0 = System.currentTimeMillis(); 
+		    
 			// Poll controllers for input
 			ControllerManager.getInstance().pollControllers();
 
@@ -120,15 +121,16 @@ public class Main {
 
 			// Render game and swap buffers
 			game.render();
-			anim.render(new Vector2(0.25f, 0.25f), 0, new Vector2(1.0f, 1.0f));
+			anim.render(new Vector2(0.25f, 0.25f), 0, new Vector2(1.0f, -1.0f));
 			GLFW.glfwSwapBuffers(windowHandle);
 
 			// Calculate difference between frame start and frame end and set
 			// thread to sleep
 			t1 = System.currentTimeMillis();
 			deltaTime = t1 - t0;
-			t0 = t1;
 			//deltaTime = Math.min(Math.max(SLEEP_MIN, deltaTime), SLEEP_DELTA);			
+			
+			System.out.println(deltaTime);
 			
 			try {
 				Thread.sleep(deltaTime);

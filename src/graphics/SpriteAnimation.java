@@ -32,6 +32,7 @@ public class SpriteAnimation implements IRenderable{
 	int currentFrame = 0;
 	int currentState = 0;
 	float frameDelay = 0.5f;
+	boolean isRunning = true;
 	int numFrames = 1;
 	float timePassed = 0.0f;
 	
@@ -43,10 +44,11 @@ public class SpriteAnimation implements IRenderable{
 		JSONObject obj = ConfigManager.loadConfigAsJson(Paths.ANIMATIONS + path);
 		Vector2 sheetSize = new Vector2(obj.getInt("width"), obj.getInt("height"));
 		int numStates = obj.getInt("numstates");
-		Vector2 spriteSize = new Vector2(obj.getInt("sprsize"), obj.getInt("sprsize"));
+		Vector2 spriteSize = new Vector2(obj.getInt("sprw"), obj.getInt("sprh"));
 		Sprite2D sheet = new Sprite2D(Paths.ANIMATIONS + obj.getString("filename"));
 		Vector2 sheetSizeCoef = new Vector2(sheet.getTexture().getWidth(), sheet.getTexture().getHeight());
 		spriteArray = new Sprite2D[numStates][];
+		numFrames = obj.getInt("numsprites");
 		
 		JSONObject state, coords;
 		Vector2 topLeft, botRight;
@@ -55,7 +57,6 @@ public class SpriteAnimation implements IRenderable{
 			if (state == null){
 				continue;
 			}
-			numFrames = state.getInt("numsprites");
 			spriteArray[i] = new Sprite2D[numFrames];
 			for (int j = 0; j < numFrames; j++){
 				coords = state.getJSONObject("" + j);
@@ -86,8 +87,21 @@ public class SpriteAnimation implements IRenderable{
 		spriteArray[currentState][currentFrame].render(position, rotation, scale);
 	}
 	
+	public void reset(){
+		stop();
+		currentFrame = 0;
+	}
+	
+	public void start(){
+		isRunning = true;
+	}
+	
+	public void stop(){
+		isRunning = false;
+	}
+	
 	public void update(float deltaTime){
-		timePassed += deltaTime;
+		timePassed += deltaTime * (isRunning ? 1 : 0);
 		if (timePassed >= frameDelay){
 			timePassed = 0.0f;
 			currentFrame = (currentFrame + 1) % numFrames;

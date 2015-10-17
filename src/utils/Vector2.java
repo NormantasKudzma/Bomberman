@@ -52,6 +52,16 @@ public class Vector2 {
 		this.y += i.y;
 	}
 	
+	public void dot(float c){
+		x *= c;
+		y *= c;
+	}
+	
+	public void dot(Vector2 i){
+		x *= i.x;
+		y *= i.y;
+	}
+	
 	public void sub(Vector2 i){
 		this.x -= i.x;
 		this.y -= i.y;

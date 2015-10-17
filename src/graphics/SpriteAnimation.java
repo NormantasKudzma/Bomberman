@@ -31,7 +31,7 @@ public class SpriteAnimation implements IRenderable{
 	Sprite2D spriteArray[][];
 	int currentFrame = 0;
 	int currentState = 0;
-	float frameDelay = 1.0f;
+	float frameDelay = 0.5f;
 	int numFrames = 1;
 	float timePassed = 0.0f;
 	
@@ -45,18 +45,25 @@ public class SpriteAnimation implements IRenderable{
 		int numStates = obj.getInt("numstates");
 		Vector2 spriteSize = new Vector2(obj.getInt("sprsize"), obj.getInt("sprsize"));
 		Sprite2D sheet = new Sprite2D(Paths.ANIMATIONS + obj.getString("filename"));
+		Vector2 sheetSizeCoef = new Vector2(sheet.getTexture().getWidth(), sheet.getTexture().getHeight());
 		spriteArray = new Sprite2D[numStates][];
+		
+		JSONObject state, coords;
+		Vector2 topLeft, botRight;
 		for (int i = 0; i < Direction.values().length; i++){
-			JSONObject state = obj.getJSONObject(Direction.fromInt(i).toString());
+			state = obj.getJSONObject(Direction.fromInt(i).toString());
 			if (state == null){
 				continue;
 			}
-			int numSprites = state.getInt("numsprites");
-			spriteArray[i] = new Sprite2D[numSprites];
-			for (int j = 0; j < numSprites; j++){
-				JSONObject coords = state.getJSONObject("" + j);
-				Vector2 topLeft = new Vector2(coords.getInt("x"), coords.getInt("y"));
-				Vector2 botRight = Vector2.add(spriteSize, topLeft);
+			numFrames = state.getInt("numsprites");
+			spriteArray[i] = new Sprite2D[numFrames];
+			for (int j = 0; j < numFrames; j++){
+				coords = state.getJSONObject("" + j);
+				topLeft = new Vector2(coords.getInt("x"), coords.getInt("y"));
+				botRight = Vector2.add(spriteSize, topLeft);
+
+				topLeft.dot(sheetSizeCoef);
+				botRight.dot(sheetSizeCoef);
 				spriteArray[i][j] = new Sprite2D(sheet.getTexture(), 
 												new Vector2(topLeft.x / sheetSize.x, topLeft.y / sheetSize.y),
 												new Vector2(botRight.x / sheetSize.x, botRight.y / sheetSize.y));

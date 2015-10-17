@@ -19,7 +19,7 @@ import controls.ControllerManager;
 
 public class Main {
 	private static final int TARGET_FPS = 60;
-	private static final long SLEEP_DELTA = 1000 / TARGET_FPS; // Maximum sleep time between frames
+	private static final long SLEEP_DELTA = 1000 / TARGET_FPS + 1; // Target sleep time between frames
 	private static final long SLEEP_MIN = 5; // Absolute minimum sleep time between frames (if too slow render)
 
 	private int frameHeight = 720;
@@ -92,7 +92,6 @@ public class Main {
 		 * System.out.println("Nintendo controller is null"); }
 		 */
 		
-
 		anim = new SpriteAnimation("ninja.json");
 	}
 
@@ -103,9 +102,8 @@ public class Main {
 		GL11.glEnable(GL11.GL_BLEND);
 	    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
+	    t0 = System.currentTimeMillis();    
 		while (GLFW.glfwWindowShouldClose(windowHandle) == GL11.GL_FALSE) {
-			t0 = System.currentTimeMillis();
-
 			// Poll controllers for input
 			ControllerManager.getInstance().pollControllers();
 
@@ -129,8 +127,9 @@ public class Main {
 			// thread to sleep
 			t1 = System.currentTimeMillis();
 			deltaTime = t1 - t0;
-			deltaTime = Math.max(SLEEP_MIN, SLEEP_DELTA - deltaTime);
-
+			t0 = t1;
+			//deltaTime = Math.min(Math.max(SLEEP_MIN, deltaTime), SLEEP_DELTA);			
+			
 			try {
 				Thread.sleep(deltaTime);
 			} catch (InterruptedException e) {

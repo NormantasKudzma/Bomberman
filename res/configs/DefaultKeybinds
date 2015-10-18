@@ -1,5 +1,10 @@
-PLAYER1=LWJGLKEYBOARDCONTROLLER
+###
+#PlayerNumber - ControllerType
+1=LWJGLKEYBOARDCONTROLLER
+###
+#KeyCode - Action
 264=moveUp
 265=moveDown
 263=moveLeft
 262=moveRight
+48=plantBomb

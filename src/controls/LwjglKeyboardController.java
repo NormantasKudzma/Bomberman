@@ -1,5 +1,6 @@
 package controls;
 
+import org.lwjgl.LWJGLUtil;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
@@ -17,11 +18,13 @@ public class LwjglKeyboardController extends AbstractController{
 				
 				if (oneClickCallback != null){
 					oneClickCallback.getCallback().handleEvent(key);
+					oneClickCallback = null;
 				}
 				
 				for (ControllerKeybind bind : keyBindings){
-					if ((bind.getBitmask() ^ key) == 0){
-						bind.getCallback().handleEvent(key);
+					if (GLFW.glfwGetKey(windowHandle, bind.getIntmask()) != GLFW.GLFW_RELEASE)
+					{
+						bind.getCallback().handleEvent(bind.getBitmask());					
 					}
 				}
 			}

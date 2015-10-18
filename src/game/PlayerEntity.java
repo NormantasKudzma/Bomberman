@@ -1,15 +1,17 @@
 package game;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 
+import physics.PhysicsWorld;
+
+import utils.ConfigManager;
+import utils.ConfigManager.Config;
+import utils.Pair;
 import utils.Paths;
 import utils.Vector2;
 import controls.AbstractController;
 import controls.ControllerEventListener;
-import controls.ControllerKeybind;
 import controls.ControllerManager;
 import controls.EController;
 
@@ -17,39 +19,27 @@ public class PlayerEntity extends Entity {
 	private float moveSpeed = 0.005f;
 	private Vector2 moveDirection = new Vector2();
 	private AbstractController keyboard;
-
+	private EntityManager entityManager = EntityManager.getInstance();
+	public PlayerEntity(){
+		super();
+	}
 	@Override
 	public void update(float deltaTime) {
 		getPosition().add(moveDirection);
 		moveDirection.set(0, 0);
 	}
 
-	public void readKeybindings() {
+	public void readKeybindings(String path) {
+		Config<String, String> readPairs = ConfigManager.getInstance().loadConfigAsPairs(Paths.DEFAULT_KEYBINDS, true);
 		keyboard = ControllerManager.getInstance().getController(
-				EController.LWJGLKEYBOARDCONTROLLER);
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(Paths.CONFIGS + "DefaultKeybinds"));
-			String line;
-			line = br.readLine(); 	// HACK, skip first line
-			while ((line = br.readLine()) != null){
-				if (line.isEmpty() || line.startsWith("#")){
-					continue;
-				}
-				
-				String [] params = line.split("=");
-				if (params.length != 2){
-					continue;
-				}
-				
-				long bitmask = Long.parseLong(params[0]);
-				Method method = this.getClass().getMethod(params[1]);
-
-				keyboard.addKeybind(new ControllerKeybind(bitmask, new K1(method, this)));
+				EController.getFromString(readPairs.firstLine.value));
+		for(Pair<String, String> i : readPairs.contents){
+			try {
+				keyboard.addKeybind(Long.parseLong(i.key), new K1(getClass().getMethod(i.value), this));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			br.close();
-		}
-		catch (Exception e){
-			e.printStackTrace();
 		}
 		keyboard.startController();
 	}
@@ -69,7 +59,15 @@ public class PlayerEntity extends Entity {
 	public void moveRight() {
 		moveDirection.setX(moveSpeed);
 	}
-
+	public void plantBomb(){
+		entityManager.createEntity(EntityManager.EntityType.BOMB, this.getPosition(), "smetona.jpg", 1);
+	}
+	
+	@Override
+	protected void initEntity(){
+		super.initEntity();
+	}
+	
 	class K1 implements ControllerEventListener {
 		java.lang.reflect.Method metodas;
 		PlayerEntity player;

@@ -13,7 +13,7 @@ import org.usb4java.InterfaceDescriptor;
 import org.usb4java.LibUsb;
 import org.usb4java.LibUsbException;
 
-import controls.ControllerManager.ProductVendor;
+import utils.Pair;
 
 public class UsbController extends AbstractController{
 	private ByteBuffer buffer;
@@ -27,9 +27,9 @@ public class UsbController extends AbstractController{
 	private Device device;
 	private DeviceHandle deviceHandle = new DeviceHandle();
 	private boolean isDeviceAttachedToKernel;
-	private ProductVendor productVendor;
+	private Pair<Short, Short> productVendor;
 	
-	public UsbController(String bp, Context ctx, Device device, ProductVendor pv){
+	public UsbController(String bp, Context ctx, Device device, Pair<Short, Short> pv){
 		busPort = bp;
 		context = ctx;
 		this.device = device;
@@ -59,7 +59,7 @@ public class UsbController extends AbstractController{
 		return device;
 	}
 	
-	public ProductVendor getProductVendor(){
+	public Pair<Short, Short> getProductVendor(){
 		return productVendor;
 	}
 	
@@ -137,6 +137,7 @@ public class UsbController extends AbstractController{
 				
 				if (oneClickCallback != null){
 					oneClickCallback.getCallback().handleEvent(bitmask);
+					oneClickCallback = null;
 				}
 				
 				for (ControllerKeybind bind : keyBindings){

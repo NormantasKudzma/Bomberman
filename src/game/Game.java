@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import org.jbox2d.common.OBBViewportTransform;
 
 import physics.PhysicsWorld;
-import utils.Paths;
+import utils.Vector2;
 
 public class Game {
 	private static final int NUM_VELOCITY_ITERATIONS = 2;
@@ -16,6 +16,7 @@ public class Game {
 	private ArrayList<Integer> destroyList = new ArrayList<Integer>();
 	private ArrayList<Entity> entityList = new ArrayList<Entity>();
 	private PhysicsWorld physicsWorld = PhysicsWorld.getInstance();
+	EntityManager entityManager = EntityManager.getInstance();
 	
 	public Game(){
 		physicsWorld.setDebugDraw(new PhysicsDebugDraw(new OBBViewportTransform()));
@@ -32,24 +33,9 @@ public class Game {
 	 * 
 	 */
 	public void init(){
-		PlayerEntity p = new PlayerEntity(); 
-		Entity e = new Entity(){
-
-			@Override
-			public void update(float deltaTime) {
-				//getPosition().add(0.0002f, 0.0002f);
-			}
-			
-		};
-		p.readKeybindings();
-		p.addSprite(Paths.TEXTURES + "smetona.jpg");
-		p.setPosition(1, 1);
-		p.initEntity();
-		e.setPosition(0, 0);
-		e.addSprite(Paths.TEXTURES + "smetona.jpg");
-		e.initEntity();
-		entityList.add(p);
-		entityList.add(e);
+		
+		entityManager.createEntity(EntityManager.EntityType.PLAYER, new Vector2(1, 1), "smetona.jpg", 1);
+		
 	}
 	
 	/** Render method - call render for each and every entity
@@ -58,7 +44,7 @@ public class Game {
 	public void render(){
 		//physicsWorld.drawDebugData();
 		
-		for (Entity e : entityList){
+		for (Entity e : entityManager.getEntityList()){
 			e.render();
 		}
 	}
@@ -73,8 +59,8 @@ public class Game {
 		
 		// Update all entities
 		Entity e;
-		for (int i = 0; i < entityList.size(); i++){
-			e = entityList.get(i);
+		for (int i = 0; i < entityManager.getEntityList().size(); i++){
+			e = entityManager.getEntityList().get(i);
 			e.update(deltaTime);
 			if (e.isDestroyed()){
 				destroyList.add(i);
@@ -83,8 +69,8 @@ public class Game {
 		
 		// Delete entities which are marked for destruction
 		for (Integer i : destroyList){
-			entityList.get(i).destroy();
-			entityList.remove(i);
+			entityManager.getEntityList().get(i).destroy();
+			entityManager.getEntityList().remove(i);
 		}
 		destroyList.clear();
 	}

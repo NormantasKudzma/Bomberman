@@ -64,6 +64,7 @@ import java.util.Hashtable;
 import javax.swing.ImageIcon;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 /**
  * A utility class to load textures for OpenGL. This source is based on a

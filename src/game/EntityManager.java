@@ -16,15 +16,26 @@ public class EntityManager {
 	enum EntityType {
 		BOMB,
 		INVALID,
+		WALL,
 		PLAYER;
 	}
-	public void createEntity(EntityType type, Vector2 pos, String spriteName, int playerIndex){
+	public ArrayList<Entity> getEntityList(){
+		return entityList;
+	}
+	public static EntityManager getInstance(){
+		return INSTANCE;
+	}
+	public void createEntity(EntityType type, Vector2 pos, String spriteName, int playerIndex,
+			int i, int j){
 		switch(type){
 			case PLAYER:{
 				entityList.add(createPlayer(pos, spriteName, playerIndex));
 			}
 			case BOMB: {
 				entityList.add(createBomb(pos, spriteName));
+			}
+			case WALL: {
+				entityList.add(createWall(i, j));
 			}
 			default:{
 				// Invalid request,
@@ -45,10 +56,11 @@ public class EntityManager {
 		bomb.setPosition(pos);
 		return bomb;
 	}
-	public ArrayList<Entity> getEntityList(){
-		return entityList;
-	}
-	public static EntityManager getInstance(){
-		return INSTANCE;
+	private WallEntity createWall(int i, int j){
+		WallEntity wall = new WallEntity();
+		wall.addSprite(Paths.TEXTURES + "wall.jpg");
+		wall.setPosition(i * 0.06f, j * 0.06f);
+		wall.initEntity();
+		return wall;
 	}
 }

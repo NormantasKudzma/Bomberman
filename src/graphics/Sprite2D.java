@@ -21,11 +21,47 @@ public class Sprite2D implements IRenderable {
 	
 	private Texture texture;	// Sprite's texture
 	private Vector2 internalScale = new Vector2(1.0f, 1.0f);	// Sprite size in game units (0;0)->(2;2)
-
+	private Vector2 topLeft;
+	private Vector2 botRight;
+	
 	public Sprite2D(){}
 	
 	public Sprite2D(String path){
+		this(path, new Vector2(), null);
+	}
+	
+	public Sprite2D(Texture tex){
+		this(tex, new Vector2(), null);
+	}
+	
+	public Sprite2D(String path, Vector2 tl, Vector2 br){		
 		loadTexture(path);
+		topLeft = tl;
+		if (br == null) {
+			botRight = new Vector2(texture.getWidth(), texture.getHeight());
+		}
+		else {
+			botRight = br;
+		}
+	}
+	
+	public Sprite2D(Texture tex, Vector2 tl, Vector2 br){
+		texture = tex;
+		topLeft = tl;
+		if (br == null) {
+			botRight = new Vector2(texture.getWidth(), texture.getHeight());
+		}
+		else {
+			botRight = br;
+		}
+	}
+	
+	public Vector2 getSize(){
+		return new Vector2(texture.getImageWidth(), texture.getImageHeight());
+	}
+	
+	public Texture getTexture(){
+		return texture;
 	}
 	
 	public void loadTexture(String path){
@@ -55,29 +91,34 @@ public class Sprite2D implements IRenderable {
         texture.bind();
  
         // translate to the right location and prepare to draw
-        glTranslatef(position.x() - 1.0f, -position.y() + 1.0f, 0);        
+        glTranslatef(position.x - 1.0f - topLeft.x * scale.x, -position.y + 1.0f - topLeft.y * scale.y, 0);        
         glScalef(scale.x(), scale.y(), 1.0f);
-        glScalef(internalScale.x(), internalScale.y(), 1.0f);
+        glScalef(internalScale.x, internalScale.y, 1.0f);
         glRotatef(rotation, 0, 0, 1.0f);
  
         // draw a quad textured to match the sprite
         glBegin(GL_QUADS);
         {
-            glTexCoord2f(0, 0);
-            glVertex2f(0, 0);
+            glTexCoord2f(topLeft.x, topLeft.y);
+            glVertex2f(topLeft.x, topLeft.y);
  
-            glTexCoord2f(0, texture.getHeight());
-            glVertex2f(0, texture.getHeight());
+            glTexCoord2f(topLeft.x, botRight.y);
+            glVertex2f(topLeft.x, botRight.y);
  
-            glTexCoord2f(texture.getWidth(), texture.getHeight());
-            glVertex2f(texture.getWidth(), texture.getHeight());
+            glTexCoord2f(botRight.x, botRight.y);
+            glVertex2f(botRight.x, botRight.y);
  
-            glTexCoord2f(texture.getWidth(), 0);
-            glVertex2f(texture.getWidth(), 0);           
+            glTexCoord2f(botRight.x, topLeft.y);
+            glVertex2f(botRight.x, topLeft.y);           
         }
         glEnd();
  
         // restore the model view matrix to prevent contamination
         glPopMatrix();
+	}
+	
+	public void setClippingBounds(Vector2 topLeftCorner, Vector2 bottomRightCorner){
+		topLeft = topLeftCorner;
+		botRight = bottomRightCorner;
 	}
 }

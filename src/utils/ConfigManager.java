@@ -2,32 +2,19 @@ package utils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
+import java.nio.file.Files;
 
-public class ConfigManager {
-	public class Config<K, V>{
-		public Pair<String, String> firstLine;
-		public ArrayList<Pair<K, V>> contents = new ArrayList<Pair<K, V>>();
-	}
+import org.json.JSONObject;
+
+public class ConfigManager {	
+	private static String commentDelim = "#";
+	private static String kvDelim = "=";
 	
-	private static final ConfigManager INSTANCE = new ConfigManager();
-	
-	private String commentDelim = "#";
-	private String kvDelim = "=";
-	
-	private ConfigManager(){
-		
-	}
-	
-	public static ConfigManager getInstance(){
-		return INSTANCE;
-	}
-	
-	public Config<String, String> loadConfigAsPairs(String path){
+	public static Config<String, String> loadConfigAsPairs(String path){
 		return loadConfigAsPairs(path, false);
 	}
 	
-	public Config<String, String> loadConfigAsPairs(String path, boolean isHeaderUnique){
+	public static Config<String, String> loadConfigAsPairs(String path, boolean isHeaderUnique){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
 			Config<String, String> cfg = new Config<String, String>();
@@ -47,7 +34,7 @@ public class ConfigManager {
 				
 				if (isHeaderUnique){
 					isHeaderUnique = false;
-					cfg.firstLine = new Pair<String, String>(params[0], params[1]);
+					cfg.firstLine = new Pair<Object, Object>(params[0], params[1]);
 					continue;
 				}
 				
@@ -60,5 +47,18 @@ public class ConfigManager {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static JSONObject loadConfigAsJson(String path){
+		try {
+			byte buffer[] = Files.readAllBytes(java.nio.file.Paths.get(path));
+			String contents = new String(buffer);
+			JSONObject obj = new JSONObject(contents);
+			return obj;
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

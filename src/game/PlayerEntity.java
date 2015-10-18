@@ -1,12 +1,9 @@
 package game;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 
-import physics.PhysicsWorld;
-
+import utils.Config;
 import utils.ConfigManager;
-import utils.ConfigManager.Config;
 import utils.Pair;
 import utils.Paths;
 import utils.Vector2;
@@ -30,9 +27,9 @@ public class PlayerEntity extends Entity {
 	}
 
 	public void readKeybindings(String path) {
-		Config<String, String> readPairs = ConfigManager.getInstance().loadConfigAsPairs(Paths.DEFAULT_KEYBINDS, true);
+		Config<String, String> readPairs = ConfigManager.loadConfigAsPairs(Paths.DEFAULT_KEYBINDS, true);
 		keyboard = ControllerManager.getInstance().getController(
-				EController.getFromString(readPairs.firstLine.value));
+				EController.getFromString((String) readPairs.firstLine.value));
 		for(Pair<String, String> i : readPairs.contents){
 			try {
 				keyboard.addKeybind(Long.parseLong(i.key), new K1(getClass().getMethod(i.value), this));
@@ -60,7 +57,7 @@ public class PlayerEntity extends Entity {
 		moveDirection.setX(moveSpeed);
 	}
 	public void plantBomb(){
-		entityManager.createEntity(EntityManager.EntityType.BOMB, this.getPosition(), "smetona.jpg", 1);
+		entityManager.createEntity(EntityManager.EntityType.BOMB, this.getPosition().copy(), "smetona.jpg", 1, 0, 0);
 	}
 	
 	@Override

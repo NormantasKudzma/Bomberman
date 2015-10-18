@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
+import graphics.SpriteAnimation;
 
 import java.nio.ByteBuffer;
 
@@ -13,16 +14,13 @@ import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
+import utils.Vector2;
 import controls.ControllerManager;
 
 public class Main {
 	private static final int TARGET_FPS = 60;
-	private static final long SLEEP_DELTA = 1000 / TARGET_FPS; // Maximum sleep
-																// time between
-																// frames
-	private static final long SLEEP_MIN = 5; // Absolute minimum sleep time
-												// between frames (if too slow
-												// render)
+	private static final long SLEEP_DELTA = 1000 / TARGET_FPS + 1; // Target sleep time between frames
+	private static final long SLEEP_MIN = 5; // Absolute minimum sleep time between frames (if too slow render)
 
 	private int frameHeight = 720;
 	private int frameWidth = 1280;
@@ -31,6 +29,8 @@ public class Main {
 	private long t0, t1; // Frame start (t0) and frame end (t1) time
 	private long windowHandle;
 
+	SpriteAnimation anim;
+	
 	private void destroy() {
 		game.destroy();
 
@@ -91,21 +91,26 @@ public class Main {
 		 * ~nintendo.getDefaultBitmaskValue(), new K1()); } else {
 		 * System.out.println("Nintendo controller is null"); }
 		 */
+		
+		anim = new SpriteAnimation("ninja.json");
 	}
 
 	private void loop() {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glViewport(0, 0, frameWidth, frameHeight);
-
+		GL11.glEnable(GL11.GL_BLEND);
+	    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+   
 		while (GLFW.glfwWindowShouldClose(windowHandle) == GL11.GL_FALSE) {
-			t0 = System.currentTimeMillis();
-
+		    t0 = System.currentTimeMillis(); 
+		    
 			// Poll controllers for input
 			ControllerManager.getInstance().pollControllers();
 
 			// Update game logic
 			game.update(deltaTime * 0.001f);
+			anim.update(deltaTime * 0.001f);
 
 			// Prepare for rendering
 			GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -116,19 +121,22 @@ public class Main {
 
 			// Render game and swap buffers
 			game.render();
+			anim.render(new Vector2(0.25f, 0.25f), 0, new Vector2(0.5f, -0.5f));
 			GLFW.glfwSwapBuffers(windowHandle);
 
 			// Calculate difference between frame start and frame end and set
 			// thread to sleep
 			t1 = System.currentTimeMillis();
 			deltaTime = t1 - t0;
-			deltaTime = Math.max(SLEEP_MIN, SLEEP_DELTA - deltaTime);
-
-			try {
+			deltaTime = Math.min(Math.max(SLEEP_MIN, deltaTime), SLEEP_DELTA);			
+			
+			//System.out.println(deltaTime);
+			
+			/*try {
 				Thread.sleep(deltaTime);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
+			}*/
 		}
 	}
 

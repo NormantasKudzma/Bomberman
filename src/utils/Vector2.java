@@ -3,12 +3,12 @@ package utils;
 import org.jbox2d.common.Vec2;
 
 public class Vector2 {
-	public static final Vector2 right = new Vector2(1, 0);
-	public static final Vector2 left = new Vector2(-1, 0);
-	public static final Vector2 up = new Vector2(0, -1);
-	public static final Vector2 down = new Vector2(0, 1);
-	public static final Vector2 zero = new Vector2(0, 0);
-	public static final Vector2 one = new Vector2(1, 1);
+	public static final Vector2 right = new Vector2(1.0f, 0.0f);
+	public static final Vector2 left = 	new Vector2(-1.0f, 0.0f);
+	public static final Vector2 up = 	new Vector2(0.0f, -1.0f);
+	public static final Vector2 down = 	new Vector2(0.0f, 1.0f);
+	public static final Vector2 zero = 	new Vector2(0.0f, 0.0f);
+	public static final Vector2 one = 	new Vector2(1.0f, 1.0f);
 	
 	public float x, y;
 	
@@ -52,12 +52,24 @@ public class Vector2 {
 		this.y += i.y;
 	}
 	
-	public void dot(float c){
+	public float angle(){
+		return FastMath.acosDeg(x / len());
+	}
+	
+	public float dot(Vector2 i){
+		return x * i.x + y * i.y;
+	}
+	
+	public float len(){
+		return (float)FastMath.fastSqrt(x * x + y * y);
+	}
+	
+	public void mul(float c){
 		x *= c;
 		y *= c;
 	}
 	
-	public void dot(Vector2 i){
+	public void mul(Vector2 i){
 		x *= i.x;
 		y *= i.y;
 	}

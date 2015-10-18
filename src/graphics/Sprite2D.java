@@ -83,7 +83,7 @@ public class Sprite2D implements IRenderable {
         texture.bind();
  
         // translate to the right location and prepare to draw
-        glTranslatef(position.x - 1.0f - topLeft.x, -position.y + 1.0f - topLeft.y, 0);        
+        glTranslatef(position.x - 1.0f - topLeft.x * scale.x, -position.y + 1.0f - topLeft.y * scale.y, 0);        
         glScalef(scale.x(), scale.y(), 1.0f);
         glScalef(internalScale.x, internalScale.y, 1.0f);
         glRotatef(rotation, 0, 0, 1.0f);

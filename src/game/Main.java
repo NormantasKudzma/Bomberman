@@ -121,22 +121,22 @@ public class Main {
 
 			// Render game and swap buffers
 			game.render();
-			anim.render(new Vector2(0.25f, 0.25f), 0, new Vector2(1.0f, -1.0f));
+			anim.render(new Vector2(0.25f, 0.25f), 0, new Vector2(0.5f, -0.5f));
 			GLFW.glfwSwapBuffers(windowHandle);
 
 			// Calculate difference between frame start and frame end and set
 			// thread to sleep
 			t1 = System.currentTimeMillis();
 			deltaTime = t1 - t0;
-			//deltaTime = Math.min(Math.max(SLEEP_MIN, deltaTime), SLEEP_DELTA);			
+			deltaTime = Math.min(Math.max(SLEEP_MIN, deltaTime), SLEEP_DELTA);			
 			
-			System.out.println(deltaTime);
+			//System.out.println(deltaTime);
 			
-			try {
+			/*try {
 				Thread.sleep(deltaTime);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
+			}*/
 		}
 	}
 

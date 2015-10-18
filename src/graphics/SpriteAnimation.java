@@ -30,8 +30,8 @@ public class SpriteAnimation implements IRenderable{
 	
 	Sprite2D spriteArray[][];
 	int currentFrame = 0;
-	int currentState = 0;
-	float frameDelay = 0.5f;
+	int currentState = 2;
+	float frameDelay = 0.15f;
 	boolean isRunning = true;
 	int numFrames = 1;
 	float timePassed = 0.0f;
@@ -63,8 +63,8 @@ public class SpriteAnimation implements IRenderable{
 				topLeft = new Vector2(coords.getInt("x"), coords.getInt("y"));
 				botRight = Vector2.add(spriteSize, topLeft);
 
-				topLeft.dot(sheetSizeCoef);
-				botRight.dot(sheetSizeCoef);
+				topLeft.mul(sheetSizeCoef);
+				botRight.mul(sheetSizeCoef);
 				spriteArray[i][j] = new Sprite2D(sheet.getTexture(), 
 												new Vector2(topLeft.x / sheetSize.x, topLeft.y / sheetSize.y),
 												new Vector2(botRight.x / sheetSize.x, botRight.y / sheetSize.y));
@@ -74,6 +74,10 @@ public class SpriteAnimation implements IRenderable{
 	
 	public void setDirection(Direction dir){
 		currentState = dir.getIndex();
+	}
+	
+	public void setDirection(Vector2 dir){
+		// stub
 	}
 	
 	public void setFrameDelay(float delay){

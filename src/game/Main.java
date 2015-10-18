@@ -92,7 +92,7 @@ public class Main {
 		 * System.out.println("Nintendo controller is null"); }
 		 */
 		
-		anim = new SpriteAnimation("ninja.json");
+		anim = new SpriteAnimation("townfolk_m.json");
 	}
 
 	private void loop() {

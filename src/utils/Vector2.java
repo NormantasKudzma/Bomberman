@@ -16,6 +16,11 @@ public class Vector2 {
 		this(0, 0);
 	}
 	
+	public Vector2(Vector2 i){
+		x = i.x;
+		y = i.y;
+	}
+	
 	public Vector2(float x, float y){
 		this.x = x;
 		this.y = y;
@@ -56,6 +61,10 @@ public class Vector2 {
 		return FastMath.acosDeg(x / len());
 	}
 	
+	public Vector2 copy(){
+		return new Vector2(x, y);
+	}
+	
 	public float dot(Vector2 i){
 		return x * i.x + y * i.y;
 	}
@@ -88,6 +97,10 @@ public class Vector2 {
 		return new Vector2(i.x + j.x, i.y + j.y);
 	}
 
+	public static Vector2 copy(Vector2 i){
+		return new Vector2(i.x, i.y);
+	}
+	
 	public static Vector2 fromVec2(Vec2 v){
 		return new Vector2(v.x, v.y);
 	}

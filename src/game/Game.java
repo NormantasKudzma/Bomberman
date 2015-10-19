@@ -1,18 +1,21 @@
 package game;
 
 import graphics.PhysicsDebugDraw;
+import graphics.Sprite2D;
+import graphics.SpriteAnimation;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.jbox2d.common.OBBViewportTransform;
 
 import physics.PhysicsWorld;
 import utils.Paths;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-public class Game {
+import utils.Vector2;
+public class Game implements IUpdatable{
 	private static final int NUM_VELOCITY_ITERATIONS = 2;
 	private static final int NUM_POSITION_ITERATIONS = 4;
 	
@@ -36,21 +39,26 @@ public class Game {
 	 */
 	public void init(){		
 		PlayerEntity p = new PlayerEntity(); 
-		Entity e = new Entity(){
+		Entity<Sprite2D> e = new Entity<Sprite2D>(){
 
 			@Override
 			public void update(float deltaTime) {
 				//getPosition().add(0.0002f, 0.0002f);
 			}
-			
+
+			@Override
+			public void render(Vector2 position, float rotation, Vector2 scale) {
+				// TODO Auto-generated method stub
+				
+			}			
 		};
 		initMap();
 		p.readKeybindings();
-		p.addSprite(Paths.TEXTURES + "smetona.jpg");
+		p.setSprite(new SpriteAnimation("ranger_f.json"));
 		p.setPosition(1, 1);
 		p.initEntity();
 		e.setPosition(0, 0);
-		e.addSprite(Paths.TEXTURES + "smetona.jpg");
+		e.setSprite(new Sprite2D(Paths.TEXTURES + "smetona.jpg"));
 		e.initEntity();
 		entityList.add(p);
 		entityList.add(e);
@@ -101,12 +109,12 @@ public class Game {
 				}
 				
 			}
-		}
-	
+		}	
 	}
+	
 	private void createWall(int i, int j){
 		WallEntity wall = new WallEntity();
-		wall.addSprite(Paths.TEXTURES + "wall.jpg");
+		wall.setSprite(new Sprite2D(Paths.TEXTURES + "wall.jpg"));
 		wall.setPosition(i * 0.06f, j * 0.06f);
 		wall.initEntity();
 		entityList.add(wall);

@@ -29,7 +29,7 @@ public class AudioManager {
 	  /** Orientation of the listener. (first 3 elements are "at", second 3 are "up") */
 	  private static FloatBuffer listenerOri = (FloatBuffer)BufferUtils.createFloatBuffer(6).put(new float[] { 0.0f, 0.0f, -1.0f,  0.0f, 1.0f, 0.0f }).rewind();
 	  
-	  static {
+	 /* static {
 		// Initialize OpenAL and clear the error bit.
 	    try{
 	      AL.create();
@@ -82,5 +82,5 @@ public class AudioManager {
 	  public static void killALData() {
 		    AL10.alDeleteSources(source);
 		    AL10.alDeleteBuffers(buffer);
-		  }
+		  }*/
 }

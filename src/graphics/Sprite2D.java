@@ -1,5 +1,7 @@
 package graphics;
 
+import game.IUpdatable;
+
 import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
@@ -8,7 +10,7 @@ import utils.Vector2;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class Sprite2D implements IRenderable {
+public class Sprite2D implements IRenderable, IUpdatable {
 	private static final float DEFAULT_SPRITE_SIZE = 0.0625f;
 	
 	private Texture texture;	// Sprite's texture
@@ -112,5 +114,11 @@ public class Sprite2D implements IRenderable {
 	public void setClippingBounds(Vector2 topLeftCorner, Vector2 bottomRightCorner){
 		topLeft = topLeftCorner;
 		botRight = bottomRightCorner;
+	}
+
+	
+	@Override
+	public void update(float deltaTime) {
+		// stub
 	}
 }

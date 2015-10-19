@@ -1,12 +1,14 @@
 package graphics;
 
+import game.IUpdatable;
+
 import org.json.JSONObject;
 
 import utils.ConfigManager;
 import utils.Paths;
 import utils.Vector2;
 
-public class SpriteAnimation implements IRenderable{
+public class SpriteAnimation implements IRenderable, IUpdatable{
 	public enum Direction{
 		UP(0),
 		RIGHT(1),

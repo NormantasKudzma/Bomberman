@@ -1,6 +1,8 @@
 package game;
 
-public class WallEntity extends Entity {
+import graphics.Sprite2D;
+
+public class WallEntity extends Entity<Sprite2D> {
 
 	@Override
 	public void update(float deltaTime) {

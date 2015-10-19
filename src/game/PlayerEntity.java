@@ -22,6 +22,7 @@ public class PlayerEntity extends Entity<SpriteAnimation> {
 
 	@Override
 	public void update(float deltaTime) {
+		super.update(deltaTime);
 		getPosition().add(moveDirection);
 		moveDirection.set(0, 0);
 	}

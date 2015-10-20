@@ -47,17 +47,20 @@ public class AudioManager {
 		}
 	}
 	
+	private static final int NUM_CHANNELS = 4;
+	
 	/** Buffers hold sound data. */
-	private static IntBuffer buffer = BufferUtils.createIntBuffer(2);
+	private static IntBuffer buffer = BufferUtils.createIntBuffer(NUM_CHANNELS);
 
 	/** Sources are points emitting sound. */
-	private static IntBuffer source = BufferUtils.createIntBuffer(2);
+	private static IntBuffer source = BufferUtils.createIntBuffer(NUM_CHANNELS);
 
-	private static HashMap<SoundType, Pair<STBVorbisInfo, ByteBuffer>> soundList = new HashMap<SoundType, Pair<STBVorbisInfo, ByteBuffer>>(SoundType.values().length + 10);
+	private static HashMap<String, Pair<STBVorbisInfo, ByteBuffer>> soundList = new HashMap<String, Pair<STBVorbisInfo, ByteBuffer>>(SoundType.values().length + 10);
 	private static ALDevice device;
 	private static ALCCapabilities capabilities;
 	private static ALContext context;
 	private static STBVorbisInfo info = new STBVorbisInfo();
+	private static int soundChannel = NUM_CHANNELS - 1;
 	
 	private AudioManager(){}
 	
@@ -88,10 +91,10 @@ public class AudioManager {
 		System.out.println("ALC_STEREO_SOURCES: " + ALC10.alcGetInteger(device.getPointer(), ALC11.ALC_STEREO_SOURCES));
 	
 		// Add initial sounds here
-		soundList.put(SoundType.BOOM, new Pair<STBVorbisInfo, ByteBuffer>(new STBVorbisInfo(), null));
+		soundList.put(SoundType.BOOM.getFilename(), new Pair<STBVorbisInfo, ByteBuffer>(new STBVorbisInfo(), null));
 		
-		for (Map.Entry<SoundType, Pair<STBVorbisInfo, ByteBuffer>> i : soundList.entrySet()){
-			i.getValue().value = readVorbis(i.getKey().getFilename(), 1024 * 32, i.getValue().key);
+		for (Map.Entry<String, Pair<STBVorbisInfo, ByteBuffer>> i : soundList.entrySet()){
+			i.getValue().value = readVorbis(i.getKey(), 1024 * 32, i.getValue().key);
 		}
 	}
 	
@@ -140,21 +143,32 @@ public class AudioManager {
 	public static void playMusic(String path) {
 		ByteBuffer pcm = readVorbis(path, 32 * 1024, info);
 
-		AL10.alBufferData(buffer.get(0), AL10.AL_FORMAT_MONO16, pcm, info.getSampleRate());
-		AL10.alSourcei(source.get(0), AL10.AL_BUFFER, buffer.get(0));
-		AL10.alSourcePlay(source.get(0));
+		AL10.alBufferData(buffer.get(soundChannel), AL10.AL_FORMAT_MONO16, pcm, info.getSampleRate());
+		AL10.alSourcei(source.get(soundChannel), AL10.AL_BUFFER, buffer.get(soundChannel));
+		AL10.alSourcePlay(source.get(soundChannel));
+		
+		soundChannel--;
+		if (soundChannel <= 0){
+			soundChannel = NUM_CHANNELS - 1;
+		}
 	}
 	
 	public static void playSound(SoundType sound){
-		
+		playSound(sound.getFilename());
 	}
 	
 	public static void playSound(String path){
-		SoundType sType = SoundType.fromString(path);
-		if (sType == SoundType.INVALID){
-			//
+		Pair<STBVorbisInfo, ByteBuffer> s = soundList.get(path);
+		if (path == null || s == null){
+			Pair<STBVorbisInfo, ByteBuffer> stbInfo = new Pair<STBVorbisInfo, ByteBuffer>(new STBVorbisInfo(), null);
+			soundList.put(path, stbInfo);
+			stbInfo.value = readVorbis(path, 1024 * 32, stbInfo.key);
+			s = soundList.get(path);
 		}
-		playSound(sType);
+		
+		AL10.alBufferData(buffer.get(0), AL10.AL_FORMAT_MONO16, s.value, info.getSampleRate());
+		AL10.alSourcei(source.get(0), AL10.AL_BUFFER, buffer.get(0));
+		AL10.alSourcePlay(source.get(0));
 	}
 	
 	public static void stopMusic(){

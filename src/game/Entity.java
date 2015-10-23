@@ -9,6 +9,7 @@ import utils.Vector2;
 public abstract class Entity implements ICollidable {	
 	private Sprite2D sprite;
 	private PhysicsBody body;
+	private String animation;
 	private boolean toBeDestroyed;
 	
 	public Entity(){
@@ -18,6 +19,14 @@ public abstract class Entity implements ICollidable {
 
 	public void addSprite(String path){
 		sprite = new Sprite2D(path);
+	}
+	
+	public void addAnimation(String path){
+		animation = path;
+	}
+	
+	public String getAnimation(){
+		return animation;
 	}
 	
 	public void destroy(){

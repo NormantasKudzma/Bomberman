@@ -1,5 +1,7 @@
 package game;
 
+import graphics.SpriteAnimation;
+
 import java.lang.reflect.InvocationTargetException;
 
 import utils.Config;
@@ -17,6 +19,7 @@ public class PlayerEntity extends Entity {
 	private Vector2 moveDirection = new Vector2();
 	private AbstractController keyboard;
 	private EntityManager entityManager = EntityManager.getInstance();
+	private SpriteAnimation animation;
 	public PlayerEntity(){
 		super();
 	}
@@ -39,6 +42,11 @@ public class PlayerEntity extends Entity {
 			}
 		}
 		keyboard.startController();
+	}
+	
+	public void animate(String path) {
+		animation = new SpriteAnimation(path);
+		animation.start();
 	}
 
 	public void moveUp() {

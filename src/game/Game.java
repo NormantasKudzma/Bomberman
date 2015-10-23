@@ -2,18 +2,17 @@ package game;
 
 import graphics.PhysicsDebugDraw;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.jbox2d.common.OBBViewportTransform;
 
 import physics.PhysicsWorld;
-import utils.Vector2;
-
 import utils.Paths;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import utils.Vector2;
 
 public class Game {
 	private static final int NUM_VELOCITY_ITERATIONS = 2;
@@ -40,7 +39,8 @@ public class Game {
 	 */
 	public void init(){
 		
-		entityManager.createEntity(EntityManager.EntityType.PLAYER, new Vector2(1, 1), "smetona.jpg", 1, 0, 0);
+		entityManager.createEntity(EntityManager.EntityType.PLAYER, new Vector2(1, 1), "healer_f.json", 1, 0, 0);
+		//entityManager.createEntity(EntityManager.EntityType.PLAYER, new Vector2(1, 1), "smetona.jpg", 1, 0, 0);
 		initMap();
 	}
 	
@@ -81,7 +81,7 @@ public class Game {
 				switch (map[i][j])
 				{
 					case 'W':
-						entityManager.createEntity(EntityManager.EntityType.WALL, new Vector2(1, 1), "smetona.jpg", 1,
+						entityManager.createEntity(EntityManager.EntityType.WALL, new Vector2(1, 1), "wall.jpg", 1,
 								i, j);;
 						break;
 					default:

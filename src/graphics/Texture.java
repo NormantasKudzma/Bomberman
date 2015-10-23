@@ -31,7 +31,7 @@
  */
 package graphics;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glBindTexture;
 
 /**
  * A texture to be bound within OpenGL. This object is responsible for keeping

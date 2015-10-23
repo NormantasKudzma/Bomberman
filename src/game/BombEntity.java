@@ -1,11 +1,9 @@
 package game;
 
-import utils.Paths;
-import utils.Vector2;
 
 public class BombEntity extends Entity {
 	public BombEntity(){
-		
+		super();
 	}
     
 	
@@ -14,5 +12,8 @@ public class BombEntity extends Entity {
 	public void update(float deltatime) {
 		
 	}
-
+	@Override
+	protected void initEntity(){
+		super.initEntity();
+	}
 }

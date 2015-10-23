@@ -2,8 +2,6 @@ package game;
 
 import java.util.ArrayList;
 
-
-
 import utils.Paths;
 import utils.Vector2;
 
@@ -30,21 +28,26 @@ public class EntityManager {
 		switch(type){
 			case PLAYER:{
 				entityList.add(createPlayer(pos, spriteName, playerIndex));
+				break;
 			}
 			case BOMB: {
 				entityList.add(createBomb(pos, spriteName));
+				break;
 			}
 			case WALL: {
-				entityList.add(createWall(i, j));
+				entityList.add(createWall(i, j, spriteName));
+				break;
 			}
 			default:{
 				// Invalid request,
+				break;
 			}
 		}
 	}
-	public PlayerEntity createPlayer(Vector2 pos, String spriteName, int playerIndex){
+	public PlayerEntity createPlayer(Vector2 pos, String animationName, int playerIndex){
 		PlayerEntity player = new PlayerEntity();
-		player.addSprite(Paths.TEXTURES + spriteName);
+		player.animate(animationName);
+		//player.addSprite(Paths.TEXTURES + animationName);
 		player.setPosition(pos);
 		player.readKeybindings(Paths.PLAYER_DATA + playerIndex + ".txt");
 		return player;
@@ -56,11 +59,10 @@ public class EntityManager {
 		bomb.setPosition(pos);
 		return bomb;
 	}
-	private WallEntity createWall(int i, int j){
+	private WallEntity createWall(int i, int j, String spriteName){
 		WallEntity wall = new WallEntity();
-		wall.addSprite(Paths.TEXTURES + "wall.jpg");
+		wall.addSprite(Paths.TEXTURES + spriteName);
 		wall.setPosition(i * 0.06f, j * 0.06f);
-		wall.initEntity();
 		return wall;
 	}
 }

@@ -1,6 +1,5 @@
 package controls;
 
-import org.lwjgl.LWJGLUtil;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;
 

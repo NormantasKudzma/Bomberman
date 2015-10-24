@@ -14,6 +14,8 @@ import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
+import audio.AudioManager;
+
 import utils.Vector2;
 import controls.ControllerManager;
 
@@ -33,6 +35,7 @@ public class Main {
 	
 	private void destroy() {
 		game.destroy();
+		AudioManager.destroy();
 
 		// Release window and window callbacks
 		GLFW.glfwDestroyWindow(windowHandle);
@@ -93,6 +96,7 @@ public class Main {
 		 */
 		
 		anim = new SpriteAnimation("townfolk_m.json");
+		AudioManager.playMusic("menu.ogg");
 	}
 
 	private void loop() {

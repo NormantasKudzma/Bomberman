@@ -6,7 +6,6 @@ public class WallEntity extends Entity<Sprite2D> {
 
 	@Override
 	public void update(float deltaTime) {
-		// TODO Auto-generated method stub
-		
+		super.update(deltaTime);
 	}
 }

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,13 @@ import utils.Paths;
 
 public class AudioManager {
 	public enum SoundType {
-		BOOM(Paths.SOUNDS + "bombexplosion.ogg"),
+		BOMB_EXPLODE	(Paths.SOUNDS + "bombexplosion.ogg"),
+		BOMB_PLACED		(Paths.SOUNDS + "bombplaced.ogg"),
+		FIRST_BLOOD		(Paths.SOUNDS + "firstblood.ogg"),
+		DOUBLE_KILL		(Paths.SOUNDS + "doublekill.ogg"),
+		TRIPLE_KILL		(Paths.SOUNDS + "triplekill.ogg"),
+		MONSTER_KILL	(Paths.SOUNDS + "monsterkill.ogg"),
+		POWERUP_PICKUP	(Paths.SOUNDS + "poweruppickup.ogg"),
 		INVALID(null);
 		
 		private String filename;
@@ -84,18 +89,24 @@ public class AudioManager {
 		System.out.println("Default device: " + defaultDeviceSpecifier);
 
 		context = ALContext.create(device);
+		AL10.alGenSources(source);
+		AL10.alGenBuffers(buffer);
 
 		System.out.println("ALC_FREQUENCY: " + ALC10.alcGetInteger(device.getPointer(), ALC10.ALC_FREQUENCY) + "Hz");
 		System.out.println("ALC_REFRESH: " + ALC10.alcGetInteger(device.getPointer(), ALC10.ALC_REFRESH) + "Hz");
 		System.out.println("ALC_SYNC: " + (ALC10.alcGetInteger(device.getPointer(), ALC10.ALC_SYNC) == ALC10.ALC_TRUE));
 		System.out.println("ALC_MONO_SOURCES: " + ALC10.alcGetInteger(device.getPointer(), ALC11.ALC_MONO_SOURCES));
 		System.out.println("ALC_STEREO_SOURCES: " + ALC10.alcGetInteger(device.getPointer(), ALC11.ALC_STEREO_SOURCES));
-	
-		// Add initial sounds here
-		soundList.put(SoundType.BOOM.getFilename(), new Pair<STBVorbisInfo, ByteBuffer>(new STBVorbisInfo(), null));
 		
-		for (Map.Entry<String, Pair<STBVorbisInfo, ByteBuffer>> i : soundList.entrySet()){
-			i.getValue().value = readVorbis(i.getKey(), 1024 * 32, i.getValue().key);
+		// Loading all initial sounds and putting them into sound list
+		Pair<STBVorbisInfo, ByteBuffer> pair;
+		for (SoundType stype : SoundType.values()){
+			if (stype == SoundType.INVALID){
+				continue;
+			}
+			pair = new Pair<STBVorbisInfo, ByteBuffer>(new STBVorbisInfo(), null);
+			pair.value = readVorbis(stype.getFilename(), 1024 * 32, pair.key);
+			soundList.put(stype.getFilename(), pair);
 		}
 	}
 	
@@ -144,16 +155,14 @@ public class AudioManager {
 	public static void playMusic(String path) {
 		path = Paths.MUSIC + path;		
 		ByteBuffer pcm = readVorbis(path, 32 * 1024, info);
-
-		AL10.alBufferData(buffer.get(soundChannel), AL10.AL_FORMAT_MONO16, pcm, info.getSampleRate());
-		AL10.alSourcei(source.get(soundChannel), AL10.AL_BUFFER, buffer.get(soundChannel));
-		AL10.alSourcePlay(source.get(soundChannel));
 		
-		// Reset used sound channel counter
-		soundChannel--;
-		if (soundChannel <= 0){
-			soundChannel = NUM_CHANNELS - 1;
-		}
+		AL10.alSourcef(source.get(0), AL10.AL_PITCH, 1.0f);
+	    AL10.alSourcef(source.get(0), AL10.AL_GAIN, 1.0f);
+		AL10.alBufferData(buffer.get(0), AL10.AL_FORMAT_STEREO16, pcm, info.getSampleRate());
+		AL10.alSourcei(source.get(0), AL10.AL_BUFFER, buffer.get(0));
+		AL10.alSourcePlay(source.get(0));
+	
+		System.out.println("AudioManager::Now playing [" + path + "]. SampleRate [" + info.getSampleRate() + "]");
 	}
 	
 	public static void playSound(SoundType sound){
@@ -169,9 +178,17 @@ public class AudioManager {
 			s = soundList.get(path);
 		}
 		
-		AL10.alBufferData(buffer.get(0), AL10.AL_FORMAT_MONO16, s.value, info.getSampleRate());
-		AL10.alSourcei(source.get(0), AL10.AL_BUFFER, buffer.get(0));
-		AL10.alSourcePlay(source.get(0));
+		AL10.alSourcef(source.get(soundChannel), AL10.AL_PITCH, 2.0f);
+	    AL10.alSourcef(source.get(soundChannel), AL10.AL_GAIN, 2.0f);
+		AL10.alBufferData(buffer.get(soundChannel), AL10.AL_FORMAT_MONO16, s.value, s.key.getSampleRate());
+		AL10.alSourcei(source.get(soundChannel), AL10.AL_BUFFER, buffer.get(soundChannel));
+		AL10.alSourcePlay(source.get(soundChannel));
+		
+		// Reset used sound channel counter
+		soundChannel--;
+		if (soundChannel <= 0){
+			soundChannel = NUM_CHANNELS - 1;
+		}
 	}
 	
 	public static void stopMusic(){

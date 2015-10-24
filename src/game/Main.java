@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
 import audio.AudioManager;
+import audio.AudioManager.SoundType;
 
 import utils.Vector2;
 import controls.ControllerManager;
@@ -96,7 +97,8 @@ public class Main {
 		 */
 		
 		anim = new SpriteAnimation("townfolk_m.json");
-		AudioManager.playMusic("menu.ogg");
+		//AudioManager.playMusic("menu.ogg");
+		AudioManager.playSound(SoundType.BOMB_EXPLODE);
 	}
 
 	private void loop() {

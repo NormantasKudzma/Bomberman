@@ -62,6 +62,9 @@ public class ConfigManager {
 
 	public static JSONObject loadConfigAsJson(String path) {
 		try {
+			if (!path.endsWith(".json")){
+				path += ".json";
+			}
 			byte buffer[] = Files.readAllBytes(java.nio.file.Paths.get(path));
 			String contents = new String(buffer);
 			JSONObject obj = new JSONObject(contents);

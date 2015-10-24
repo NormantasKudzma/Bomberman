@@ -21,10 +21,11 @@ import org.lwjgl.stb.STBVorbisInfo;
 
 import utils.ConfigManager;
 import utils.Pair;
+import utils.Paths;
 
 public class AudioManager {
 	public enum SoundType {
-		BOOM("boom.ogg"),
+		BOOM(Paths.SOUNDS + "bombexplosion.ogg"),
 		INVALID(null);
 		
 		private String filename;
@@ -141,12 +142,14 @@ public class AudioManager {
 	}
 	
 	public static void playMusic(String path) {
+		path = Paths.MUSIC + path;		
 		ByteBuffer pcm = readVorbis(path, 32 * 1024, info);
 
 		AL10.alBufferData(buffer.get(soundChannel), AL10.AL_FORMAT_MONO16, pcm, info.getSampleRate());
 		AL10.alSourcei(source.get(soundChannel), AL10.AL_BUFFER, buffer.get(soundChannel));
 		AL10.alSourcePlay(source.get(soundChannel));
 		
+		// Reset used sound channel counter
 		soundChannel--;
 		if (soundChannel <= 0){
 			soundChannel = NUM_CHANNELS - 1;

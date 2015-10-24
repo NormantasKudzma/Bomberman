@@ -14,7 +14,7 @@ import controls.ControllerEventListener;
 import controls.ControllerManager;
 import controls.EController;
 
-public class PlayerEntity extends Entity {
+public class PlayerEntity extends Entity<SpriteAnimation> {
 	private float moveSpeed = 0.005f;
 	private Vector2 moveDirection = new Vector2();
 	private AbstractController keyboard;
@@ -95,4 +95,5 @@ public class PlayerEntity extends Entity {
 			}
 		}
 	}
+
 }

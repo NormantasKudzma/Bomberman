@@ -30,14 +30,14 @@ public class EntityManager {
 				entityList.add(createPlayer(pos, spriteName, playerIndex));
 				break;
 			}
-			case BOMB: {
+			/*case BOMB: {
 				entityList.add(createBomb(pos, spriteName));
 				break;
 			}
 			case WALL: {
 				entityList.add(createWall(i, j, spriteName));
 				break;
-			}
+			}*/
 			default:{
 				// Invalid request,
 				break;
@@ -46,14 +46,13 @@ public class EntityManager {
 	}
 	public PlayerEntity createPlayer(Vector2 pos, String animationName, int playerIndex){
 		PlayerEntity player = new PlayerEntity();
-		player.animate(animationName);
-		//player.addSprite(Paths.TEXTURES + animationName);
+
 		player.setPosition(pos);
 		player.readKeybindings(Paths.PLAYER_DATA + playerIndex + ".txt");
 		return player;
 		
 	}
-	public BombEntity createBomb(Vector2 pos, String spriteName){
+	/*public BombEntity createBomb(Vector2 pos, String spriteName){
 		BombEntity bomb = new BombEntity();
 		bomb.addSprite(Paths.TEXTURES + spriteName);
 		bomb.setPosition(pos);
@@ -64,5 +63,5 @@ public class EntityManager {
 		wall.addSprite(Paths.TEXTURES + spriteName);
 		wall.setPosition(i * 0.06f, j * 0.06f);
 		return wall;
-	}
+	}*/
 }

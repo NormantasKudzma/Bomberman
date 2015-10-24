@@ -1,5 +1,6 @@
 package graphics;
 
+
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glEnd;
@@ -12,11 +13,18 @@ import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import static org.lwjgl.opengl.GL11.glVertex2f;
 
+import game.IUpdatable;
+
+import java.io.IOException;
+
+
 import java.io.IOException;
 
 import utils.Vector2;
 
-public class Sprite2D implements IRenderable {
+
+
+public class Sprite2D implements IRenderable, IUpdatable {
 	private static final float DEFAULT_SPRITE_SIZE = 0.0625f;
 	
 	private Texture texture;	// Sprite's texture
@@ -120,5 +128,11 @@ public class Sprite2D implements IRenderable {
 	public void setClippingBounds(Vector2 topLeftCorner, Vector2 bottomRightCorner){
 		topLeft = topLeftCorner;
 		botRight = bottomRightCorner;
+	}
+
+	
+	@Override
+	public void update(float deltaTime) {
+		// stub
 	}
 }

@@ -1,6 +1,8 @@
 package game;
 
 import graphics.PhysicsDebugDraw;
+import graphics.Sprite2D;
+import graphics.SpriteAnimation;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -14,7 +16,8 @@ import physics.PhysicsWorld;
 import utils.Paths;
 import utils.Vector2;
 
-public class Game {
+public class Game implements IUpdatable{
+
 	private static final int NUM_VELOCITY_ITERATIONS = 2;
 	private static final int NUM_POSITION_ITERATIONS = 4;
 	
@@ -37,7 +40,30 @@ public class Game {
 	/** Game initialization (creating entities, loading map etc.) goes here
 	 * 
 	 */
-	public void init(){
+	public void init(){		
+		PlayerEntity p = new PlayerEntity(); 
+		Entity<Sprite2D> e = new Entity<Sprite2D>(){
+
+			@Override
+			public void update(float deltaTime) {
+				//getPosition().add(0.0002f, 0.0002f);
+			}
+
+			@Override
+			public void render(Vector2 position, float rotation, Vector2 scale) {
+				// TODO Auto-generated method stub
+				
+			}			
+		};
+		initMap();
+		p.setSprite(new SpriteAnimation("ranger_f.json"));
+		p.setPosition(1, 1);
+		p.initEntity();
+		e.setPosition(0, 0);
+		e.setSprite(new Sprite2D(Paths.TEXTURES + "smetona.jpg"));
+		e.initEntity();
+		entityList.add(p);
+		entityList.add(e);
 		
 		entityManager.createEntity(EntityManager.EntityType.PLAYER, new Vector2(1, 1), "healer_f.json", 1, 0, 0);
 		//entityManager.createEntity(EntityManager.EntityType.PLAYER, new Vector2(1, 1), "smetona.jpg", 1, 0, 0);
@@ -89,8 +115,15 @@ public class Game {
 				}
 				
 			}
-		}
+		}	
+	}
 	
+	private void createWall(int i, int j){
+		WallEntity wall = new WallEntity();
+		wall.setSprite(new Sprite2D(Paths.TEXTURES + "wall.jpg"));
+		wall.setPosition(i * 0.06f, j * 0.06f);
+		wall.initEntity();
+		entityList.add(wall);
 	}
 	
 	/** Render method - call render for each and every entity

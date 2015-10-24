@@ -1,13 +1,14 @@
 package game;
 
+import graphics.IRenderable;
 import graphics.Sprite2D;
 import physics.ICollidable;
 import physics.PhysicsBody;
 import physics.PhysicsWorld;
 import utils.Vector2;
 
-public abstract class Entity implements ICollidable {	
-	private Sprite2D sprite;
+public abstract class Entity<S extends IRenderable & IUpdatable> implements ICollidable, IRenderable, IUpdatable {	
+	private S sprite;
 	private PhysicsBody body;
 	private String animation;
 	private boolean toBeDestroyed;
@@ -15,10 +16,6 @@ public abstract class Entity implements ICollidable {
 	public Entity(){
 		toBeDestroyed = false;
 		initEntity();
-	}
-
-	public void addSprite(String path){
-		sprite = new Sprite2D(path);
 	}
 	
 	public void addAnimation(String path){
@@ -45,7 +42,7 @@ public abstract class Entity implements ICollidable {
 		return body.getScale();
 	}
 	
-	public Sprite2D getSprite(){
+	public S getSprite(){
 		return sprite;
 	}
 	
@@ -89,12 +86,16 @@ public abstract class Entity implements ICollidable {
 		body.setScale(scale);
 	}
 	
-	public void setSprite(Sprite2D spr){
+	public void setSprite(S spr){
 		sprite = spr;
 	}
 	
 	public void render(){
-		sprite.render(body.getPosition(), body.getRotation(), body.getScale());
+		render(body.getPosition(), body.getRotation(), body.getScale());
+	}
+	
+	public void render(Vector2 position, float rotation, Vector2 scale){
+		sprite.render(position, rotation, scale);
 	}
 	
 	public abstract void update(float deltaTime);

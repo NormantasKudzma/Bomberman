@@ -1,17 +1,19 @@
 package graphics;
 
+import game.IUpdatable;
+
 import org.json.JSONObject;
 
 import utils.ConfigManager;
 import utils.Paths;
 import utils.Vector2;
 
-public class SpriteAnimation implements IRenderable{
+public class SpriteAnimation implements IRenderable, IUpdatable{
 	public enum Direction{
-		UP(1),
-		RIGHT(0),
-		DOWN(3),
-		LEFT(2);
+		UP(2),
+		RIGHT(1),
+		DOWN(0),
+		LEFT(3);
 		
 		private final int i;
 		
@@ -74,12 +76,10 @@ public class SpriteAnimation implements IRenderable{
 	
 	public void setDirection(Direction dir){
 		currentState = dir.getIndex();
-		currentFrame = 0;
 	}
 	
 	public void setDirection(Vector2 dir){
-		int q = (int)(dir.angle() + 0.5f) / 90;
-		setDirection(Direction.fromInt(q));
+		// stub
 	}
 	
 	public void setFrameDelay(float delay){
@@ -93,17 +93,21 @@ public class SpriteAnimation implements IRenderable{
 		spriteArray[currentState][currentFrame].render(position, rotation, scale);
 	}
 	
-	public void setPaused(boolean isPaused){
-		isRunning = isPaused;
+	public void reset(){
+		stop();
 		currentFrame = 0;
 	}
 	
+	public void start(){
+		isRunning = true;
+	}
+	
+	public void stop(){
+		isRunning = false;
+	}
+	
 	public void update(float deltaTime){
-		if (!isRunning){
-			return;
-		}
-		
-		timePassed += deltaTime;
+		timePassed += deltaTime * (isRunning ? 1 : 0);
 		if (timePassed >= frameDelay){
 			timePassed = 0.0f;
 			currentFrame = (currentFrame + 1) % numFrames;

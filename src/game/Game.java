@@ -41,7 +41,6 @@ public class Game implements IUpdatable{
 	 * 
 	 */
 	public void init(){		
-		PlayerEntity p = new PlayerEntity(); 
 		Entity<Sprite2D> e = new Entity<Sprite2D>(){
 
 			@Override
@@ -55,17 +54,8 @@ public class Game implements IUpdatable{
 				
 			}			
 		};
-		initMap();
-		p.setSprite(new SpriteAnimation("ranger_f.json"));
-		p.setPosition(1, 1);
-		p.initEntity();
-		e.setPosition(0, 0);
-		e.setSprite(new Sprite2D(Paths.TEXTURES + "smetona.jpg"));
-		e.initEntity();
-		entityList.add(p);
-		entityList.add(e);
-		
-		entityManager.createEntity(EntityManager.EntityType.PLAYER, new Vector2(1, 1), "healer_f.json", 1, 0, 0);
+		initMap();		
+		entityManager.createEntity(EntityManager.EntityType.PLAYER, new Vector2(1, 1), "healer_f.json", 1);
 		//entityManager.createEntity(EntityManager.EntityType.PLAYER, new Vector2(1, 1), "smetona.jpg", 1, 0, 0);
 		initMap();
 	}
@@ -107,8 +97,7 @@ public class Game implements IUpdatable{
 				switch (map[i][j])
 				{
 					case 'W':
-						entityManager.createEntity(EntityManager.EntityType.WALL, new Vector2(1, 1), "wall.jpg", 1,
-								i, j);;
+						entityManager.createEntity(EntityManager.EntityType.WALL, "wall.jpg", i, j);
 						break;
 					default:
 						break;

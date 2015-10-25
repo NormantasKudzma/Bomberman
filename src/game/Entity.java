@@ -98,5 +98,7 @@ public abstract class Entity<S extends IRenderable & IUpdatable> implements ICol
 		sprite.render(position, rotation, scale);
 	}
 	
-	public abstract void update(float deltaTime);
+	public void update(float deltaTime){
+		sprite.update(deltaTime);
+	}
 }

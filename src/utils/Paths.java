@@ -7,6 +7,8 @@ public class Paths {
 	public static final String CONFIGS = RESOURCES + "configs/";
 	public static final String MAPS = RESOURCES + "maps/";  
 	public static final String ANIMATIONS = TEXTURES + "animations/";
+	public static final String SOUNDS = RESOURCES + "sounds/";
+	public static final String MUSIC = RESOURCES + "music/";
 	
 	
 	public static final String ALLOWED_DEVICES = CONFIGS + "AllowedDevices.dat";

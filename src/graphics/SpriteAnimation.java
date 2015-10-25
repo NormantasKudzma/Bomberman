@@ -5,8 +5,10 @@ import game.IUpdatable;
 import org.json.JSONObject;
 
 import utils.ConfigManager;
+import utils.Globals;
 import utils.Paths;
 import utils.Vector2;
+import web.WebSprite2D;
 
 public class SpriteAnimation implements IRenderable, IUpdatable{
 	public enum Direction{
@@ -43,34 +45,54 @@ public class SpriteAnimation implements IRenderable, IUpdatable{
 	}
 	
 	private void loadSpriteSheet(String path){
-		JSONObject obj = ConfigManager.loadConfigAsJson(Paths.ANIMATIONS + path);
-		Vector2 sheetSize = new Vector2(obj.getInt("width"), obj.getInt("height"));
-		int numStates = obj.getInt("numstates");
-		Vector2 spriteSize = new Vector2(obj.getInt("sprw"), obj.getInt("sprh"));
-		Sprite2D sheet = new Sprite2D(Paths.ANIMATIONS + obj.getString("filename"));
-		Vector2 sheetSizeCoef = new Vector2(sheet.getTexture().getWidth(), sheet.getTexture().getHeight());
-		spriteArray = new Sprite2D[numStates][];
-		numFrames = obj.getInt("numsprites");
-		
-		JSONObject state, coords;
-		Vector2 topLeft, botRight;
-		for (int i = 0; i < Direction.values().length; i++){
-			state = obj.getJSONObject(Direction.fromInt(i).toString());
-			if (state == null){
-				continue;
+		try {
+			JSONObject obj = ConfigManager.loadConfigAsJson(Paths.ANIMATIONS + path);
+			Vector2 sheetSize = new Vector2(obj.getInt("width"), obj.getInt("height"));
+			int numStates = obj.getInt("numstates");
+			Vector2 spriteSize = new Vector2(obj.getInt("sprw"), obj.getInt("sprh"));
+			
+			Sprite2D sheet = null;
+			if (Globals.WEB){
+				sheet = new WebSprite2D(Paths.ANIMATIONS + obj.getString("filename"));
 			}
-			spriteArray[i] = new Sprite2D[numFrames];
-			for (int j = 0; j < numFrames; j++){
-				coords = state.getJSONObject("" + j);
-				topLeft = new Vector2(coords.getInt("x"), coords.getInt("y"));
-				botRight = Vector2.add(spriteSize, topLeft);
-
-				topLeft.mul(sheetSizeCoef);
-				botRight.mul(sheetSizeCoef);
-				spriteArray[i][j] = new Sprite2D(sheet.getTexture(), 
-												new Vector2(topLeft.x / sheetSize.x, topLeft.y / sheetSize.y),
-												new Vector2(botRight.x / sheetSize.x, botRight.y / sheetSize.y));
+			else {
+				sheet = new Sprite2D(Paths.ANIMATIONS + obj.getString("filename"));
 			}
+			
+			Vector2 sheetSizeCoef = new Vector2(sheet.getTexture().getWidth(), sheet.getTexture().getHeight());
+			spriteArray = new Sprite2D[numStates][];
+			numFrames = obj.getInt("numsprites");
+			
+			JSONObject state, coords;
+			Vector2 topLeft, botRight;
+			for (int i = 0; i < Direction.values().length; i++){
+				state = obj.getJSONObject(Direction.fromInt(i).toString());
+				if (state == null){
+					continue;
+				}
+				spriteArray[i] = new Sprite2D[numFrames];
+				for (int j = 0; j < numFrames; j++){
+					coords = state.getJSONObject("" + j);
+					topLeft = new Vector2(coords.getInt("x"), coords.getInt("y"));
+					botRight = Vector2.add(spriteSize, topLeft);
+	
+					topLeft.mul(sheetSizeCoef);
+					botRight.mul(sheetSizeCoef);
+					if (Globals.WEB){
+						spriteArray[i][j] = new WebSprite2D(((WebSprite2D)sheet).getWebTexture(), 
+								new Vector2(topLeft.x / sheetSize.x, topLeft.y / sheetSize.y),
+								new Vector2(botRight.x / sheetSize.x, botRight.y / sheetSize.y));
+					}
+					else {
+						spriteArray[i][j] = new Sprite2D(sheet.getTexture(), 
+								new Vector2(topLeft.x / sheetSize.x, topLeft.y / sheetSize.y),
+								new Vector2(botRight.x / sheetSize.x, botRight.y / sheetSize.y));
+					}
+				}
+			}
+		}
+		catch (Exception e){
+			e.printStackTrace();
 		}
 	}
 	

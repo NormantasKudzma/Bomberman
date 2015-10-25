@@ -11,12 +11,12 @@ import utils.Vector2;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Sprite2D implements IRenderable, IUpdatable {
-	private static final float DEFAULT_SPRITE_SIZE = 0.0625f;
+	protected static final float DEFAULT_SPRITE_SIZE = 0.0625f;
 	
 	private Texture texture;	// Sprite's texture
-	private Vector2 internalScale = new Vector2(1.0f, 1.0f);	// Sprite size in game units (0;0)->(2;2)
-	private Vector2 topLeft;
-	private Vector2 botRight;
+	protected Vector2 internalScale = new Vector2(1.0f, 1.0f);	// Sprite size in game units (0;0)->(2;2)
+	protected Vector2 topLeft;
+	protected Vector2 botRight;
 	
 	public Sprite2D(){}
 	
@@ -60,7 +60,7 @@ public class Sprite2D implements IRenderable, IUpdatable {
 	
 	public void loadTexture(String path){
 		try {
-			texture = TextureLoader.getInstance().getTexture(path);
+			texture = (Texture)TextureLoader.getInstance().getTexture(path);
 			internalScale.set(DEFAULT_SPRITE_SIZE / texture.getWidth(), DEFAULT_SPRITE_SIZE / texture.getHeight());
 		}
 		catch (IOException e){
@@ -115,7 +115,6 @@ public class Sprite2D implements IRenderable, IUpdatable {
 		topLeft = topLeftCorner;
 		botRight = bottomRightCorner;
 	}
-
 	
 	@Override
 	public void update(float deltaTime) {

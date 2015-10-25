@@ -45,7 +45,6 @@ import static org.lwjgl.opengl.GL11.glTexParameteri;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -55,7 +54,6 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -65,7 +63,13 @@ import java.util.Hashtable;
 import javax.swing.ImageIcon;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
+
+import utils.Globals;
+import web.WebRenderer;
+import web.WebTexture;
+
+import com.google.gwt.user.client.ui.Image;
+import com.googlecode.gwtgl.binding.WebGLRenderingContext;
 
 /**
  * A utility class to load textures for OpenGL. This source is based on a
@@ -84,7 +88,7 @@ public class TextureLoader {
 	private static TextureLoader INSTANCE = new TextureLoader();
 
 	/** The table of textures that have been loaded in this loader */
-	private HashMap<String, Texture> table = new HashMap<String, Texture>();
+	private HashMap<String, TextureBase> table = new HashMap<String, TextureBase>();
 
 	/** The colour model including alpha for the GL image */
 	private ColorModel glAlphaColorModel;
@@ -99,15 +103,17 @@ public class TextureLoader {
 	 * Create a new texture loader based on the game panel
 	 */
 	private TextureLoader() {
-		glAlphaColorModel = new ComponentColorModel(
-				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8,
-						8, 8 }, true, false, ComponentColorModel.TRANSLUCENT,
-				DataBuffer.TYPE_BYTE);
-
-		glColorModel = new ComponentColorModel(
-				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8,
-						8, 0 }, false, false, ComponentColorModel.OPAQUE,
-				DataBuffer.TYPE_BYTE);
+		if (!Globals.WEB){
+			glAlphaColorModel = new ComponentColorModel(
+					ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8,
+							8, 8 }, true, false, ComponentColorModel.TRANSLUCENT,
+					DataBuffer.TYPE_BYTE);
+	
+			glColorModel = new ComponentColorModel(
+					ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8,
+							8, 0 }, false, false, ComponentColorModel.OPAQUE,
+					DataBuffer.TYPE_BYTE);
+		}
 	}
 
 	/**
@@ -116,8 +122,11 @@ public class TextureLoader {
 	 * @return A new texture ID
 	 */
 	private int createTextureID() {
-		glGenTextures(textureIDBuffer);
-		return textureIDBuffer.get(0);
+		if (!Globals.WEB){
+			glGenTextures(textureIDBuffer);
+			return textureIDBuffer.get(0);
+		}
+		return -1;
 	}
 
 	public static TextureLoader getInstance() {
@@ -133,21 +142,35 @@ public class TextureLoader {
 	 * @throws IOException
 	 *             Indicates a failure to access the resource
 	 */
-	public Texture getTexture(String resourceName) throws IOException {
-		Texture tex = table.get(resourceName);
-
-		if (tex != null) {
+	public TextureBase getTexture(String resourceName) throws IOException {
+		if (!Globals.WEB){
+			Texture tex = (Texture)table.get(resourceName);
+	
+			if (tex != null) {
+				return tex;
+			}
+	
+			tex = (Texture)getTexture(resourceName, GL_TEXTURE_2D, // target
+					GL_RGBA, // dst pixel format
+					GL_LINEAR, // min filter (unused)
+					GL_LINEAR);
+	
+			table.put(resourceName, tex);
+	
 			return tex;
 		}
-
-		tex = getTexture(resourceName, GL_TEXTURE_2D, // target
-				GL_RGBA, // dst pixel format
-				GL_LINEAR, // min filter (unused)
-				GL_LINEAR);
-
-		table.put(resourceName, tex);
-
-		return tex;
+		else {
+			WebTexture tex = (WebTexture)table.get(resourceName);
+			
+			if (tex != null){
+				return tex;
+			}
+			
+			tex = (WebTexture)getTexture(resourceName, 0, 0, 0, 0);
+			table.put(resourceName, tex);
+			
+			return tex;
+		}
 	}
 
 	/**
@@ -167,43 +190,60 @@ public class TextureLoader {
 	 * @throws IOException
 	 *             Indicates a failure to access the resource
 	 */
-	public Texture getTexture(String resourceName, int target,
-			int dstPixelFormat, int minFilter, int magFilter)
-			throws IOException {
-		int srcPixelFormat;
-
-		// create the texture ID for this texture
-		int textureID = createTextureID();
-		Texture texture = new Texture(target, textureID);
-
-		// bind this texture
-		glBindTexture(target, textureID);
-
-		BufferedImage bufferedImage = loadImage(resourceName);
-		texture.setWidth(bufferedImage.getWidth());
-		texture.setHeight(bufferedImage.getHeight());
-
-		if (bufferedImage.getColorModel().hasAlpha()) {
-			srcPixelFormat = GL_RGBA;
-		} else {
-			srcPixelFormat = GL_RGB;
+	public TextureBase getTexture(String resourceName, int target, int dstPixelFormat, int minFilter, int magFilter) throws IOException {
+		if (!Globals.WEB){
+			int srcPixelFormat;
+	
+			// create the texture ID for this texture
+			int textureID = createTextureID();
+			Texture texture = new Texture(target, textureID);
+	
+			// bind this texture
+			glBindTexture(target, textureID);
+	
+			BufferedImage bufferedImage = loadImage(resourceName);
+			texture.setWidth(bufferedImage.getWidth());
+			texture.setHeight(bufferedImage.getHeight());
+	
+			if (bufferedImage.getColorModel().hasAlpha()) {
+				srcPixelFormat = GL_RGBA;
+			} else {
+				srcPixelFormat = GL_RGB;
+			}
+	
+			// convert that image into a byte buffer of texture data
+			ByteBuffer textureBuffer = convertImageData(bufferedImage, texture);
+	
+			if (target == GL_TEXTURE_2D) {
+				glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter);
+				glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magFilter);
+			}
+	
+			// produce a texture from the byte buffer
+			glTexImage2D(target, 0, dstPixelFormat,
+					get2Fold(bufferedImage.getWidth()),
+					get2Fold(bufferedImage.getHeight()), 0, srcPixelFormat,
+					GL_UNSIGNED_BYTE, textureBuffer);
+	
+			return texture;
 		}
+		else {
+			WebGLRenderingContext gl = WebRenderer.get();
+			Image img = new Image(resourceName);
+			WebTexture texture = new WebTexture();
+			texture.tex = gl.createTexture();
+			gl.bindTexture(gl.TEXTURE_2D, texture.tex);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img.getElement());
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+			gl.generateMipmap(gl.TEXTURE_2D);
+			gl.bindTexture(gl.TEXTURE_2D, null);
 
-		// convert that image into a byte buffer of texture data
-		ByteBuffer textureBuffer = convertImageData(bufferedImage, texture);
-
-		if (target == GL_TEXTURE_2D) {
-			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter);
-			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magFilter);
+			texture.setWidth(img.getWidth());
+			texture.setHeight(img.getHeight());
+			
+			return texture;
 		}
-
-		// produce a texture from the byte buffer
-		glTexImage2D(target, 0, dstPixelFormat,
-				get2Fold(bufferedImage.getWidth()),
-				get2Fold(bufferedImage.getHeight()), 0, srcPixelFormat,
-				GL_UNSIGNED_BYTE, textureBuffer);
-
-		return texture;
 	}
 
 	/**
@@ -296,7 +336,7 @@ public class TextureLoader {
 		// due to an issue with ImageIO and mixed signed code
 		// we are now using good oldfashioned ImageIcon to load
 		// images and the paint it on top of a new BufferedImage
-		Image img = new ImageIcon(ref).getImage();
+		java.awt.Image img = new ImageIcon(ref).getImage();
 		BufferedImage bufferedImage = new BufferedImage(img.getWidth(null),
 				img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = bufferedImage.getGraphics();

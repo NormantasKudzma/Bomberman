@@ -10,10 +10,10 @@ import utils.Vector2;
 
 public class SpriteAnimation implements IRenderable, IUpdatable{
 	public enum Direction{
-		UP(0),
-		RIGHT(1),
-		DOWN(2),
-		LEFT(3);
+		UP(1),
+		RIGHT(0),
+		DOWN(3),
+		LEFT(2);
 		
 		private final int i;
 		
@@ -76,10 +76,12 @@ public class SpriteAnimation implements IRenderable, IUpdatable{
 	
 	public void setDirection(Direction dir){
 		currentState = dir.getIndex();
+		currentFrame = 0;
 	}
 	
 	public void setDirection(Vector2 dir){
-		// stub
+		int q = (int)(dir.angle() + 0.5f) / 90;
+		setDirection(Direction.fromInt(q));
 	}
 	
 	public void setFrameDelay(float delay){
@@ -93,21 +95,17 @@ public class SpriteAnimation implements IRenderable, IUpdatable{
 		spriteArray[currentState][currentFrame].render(position, rotation, scale);
 	}
 	
-	public void reset(){
-		stop();
+	public void setPaused(boolean isPaused){
+		isRunning = isPaused;
 		currentFrame = 0;
 	}
 	
-	public void start(){
-		isRunning = true;
-	}
-	
-	public void stop(){
-		isRunning = false;
-	}
-	
 	public void update(float deltaTime){
-		timePassed += deltaTime * (isRunning ? 1 : 0);
+		if (!isRunning){
+			return;
+		}
+		
+		timePassed += deltaTime;
 		if (timePassed >= frameDelay){
 			timePassed = 0.0f;
 			currentFrame = (currentFrame + 1) % numFrames;

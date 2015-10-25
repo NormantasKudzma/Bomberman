@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GLContext;
 import audio.AudioManager;
 import audio.AudioManager.SoundType;
 
+import utils.FastMath;
 import utils.Vector2;
 import controls.ControllerManager;
 
@@ -146,7 +147,7 @@ public class Main {
 		}
 	}
 
-	private void run() {
+	public void run() {
 		try {
 			init();
 			loop();

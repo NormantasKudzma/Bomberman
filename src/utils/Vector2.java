@@ -58,7 +58,7 @@ public class Vector2 {
 	}
 	
 	public float angle(){
-		return FastMath.acosDeg(x / len());
+		return FastMath.atan2(x, y);
 	}
 	
 	public Vector2 copy(){

@@ -6,9 +6,11 @@ import physics.PhysicsBody;
 import physics.PhysicsWorld;
 import utils.Vector2;
 
-public abstract class Entity<S extends IRenderable & IUpdatable> implements ICollidable, IRenderable, IUpdatable {	
-	private S sprite;
+public abstract class Entity<S extends IRenderable & IUpdatable> implements ICollidable, IRenderable, IUpdatable {
 	private PhysicsBody body;
+	private boolean isLifetimeFinite = false;
+	private float lifetime = 0.0f;
+	private S sprite;
 	private boolean toBeDestroyed;
 	
 	public Entity(){
@@ -55,6 +57,11 @@ public abstract class Entity<S extends IRenderable & IUpdatable> implements ICol
 		toBeDestroyed = true;
 	}
 	
+	public void setLifetime(float time){
+		lifetime = time;
+		isLifetimeFinite = true;
+	}
+	
 	public void setPosition(Vector2 pos){
 		body.setPosition(pos);
 	}
@@ -90,5 +97,12 @@ public abstract class Entity<S extends IRenderable & IUpdatable> implements ICol
 	
 	public void update(float deltaTime){
 		sprite.update(deltaTime);
+		
+		if (isLifetimeFinite){
+			lifetime -= deltaTime;
+			if (lifetime <= 0.0f){
+				markForDestruction();
+			}
+		}
 	}
 }

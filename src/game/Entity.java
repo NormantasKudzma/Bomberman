@@ -1,7 +1,6 @@
 package game;
 
 import graphics.IRenderable;
-import graphics.Sprite2D;
 import physics.ICollidable;
 import physics.PhysicsBody;
 import physics.PhysicsWorld;

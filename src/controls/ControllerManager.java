@@ -23,7 +23,6 @@ public class ControllerManager{
 	private LwjglKeyboardController lwjglKeyboardController;
 	private ArrayList<UsbController> usbControllerList;
 	private DeviceList usbDeviceList;
-	private long windowHandleMain = -1;
 	
 	private ControllerManager(){
 		
@@ -82,7 +81,6 @@ public class ControllerManager{
 			case LWJGLKEYBOARDCONTROLLER:{
 				if (lwjglKeyboardController == null){
 					lwjglKeyboardController = new LwjglKeyboardController();
-					lwjglKeyboardController.setWindowHandle(windowHandleMain);
 					allControllers.add(lwjglKeyboardController);
 				}
 				return lwjglKeyboardController;
@@ -171,9 +169,5 @@ public class ControllerManager{
 			System.out.print(deviceListStringBuilder.toString());
 		}
 		return deviceListStringBuilder.toString();
-	}
-
-	public void setWindowHandle(long handle){
-		windowHandleMain = handle;
 	}
 }

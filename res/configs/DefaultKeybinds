@@ -1,5 +1,5 @@
 PLAYER1=LWJGLKEYBOARDCONTROLLER
-265=moveUp
-264=moveDown
-263=moveLeft
-262=moveRight
+208=moveUp
+200=moveDown
+203=moveLeft
+205=moveRight

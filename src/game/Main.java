@@ -7,31 +7,24 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
 import graphics.SpriteAnimation;
 
-import java.nio.ByteBuffer;
-
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWvidmode;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
 
-import audio.AudioManager;
-import audio.AudioManager.SoundType;
-
-import utils.FastMath;
 import utils.Vector2;
+import audio.AudioManager;
 import controls.ControllerManager;
 
 public class Main {
 	private static final int TARGET_FPS = 60;
-	private static final long SLEEP_DELTA = 1000 / TARGET_FPS + 1; // Target sleep time between frames
-	private static final long SLEEP_MIN = 5; // Absolute minimum sleep time between frames (if too slow render)
+	//private static final long SLEEP_DELTA = 1000 / TARGET_FPS + 1; // Target sleep time between frames
+	//private static final long SLEEP_MIN = 5; // Absolute minimum sleep time between frames (if too slow render)
 
 	private int frameHeight = 720;
 	private int frameWidth = 1280;
 	private long deltaTime;
 	private Game game;
 	private long t0, t1; // Frame start (t0) and frame end (t1) time
-	private long windowHandle;
 
 	SpriteAnimation anim;
 	
@@ -39,43 +32,19 @@ public class Main {
 		game.destroy();
 		AudioManager.destroy();
 
-		// Release window and window callbacks
-		GLFW.glfwDestroyWindow(windowHandle);
+		Display.destroy();
 	}
 
 	private void init() {
-		// Initialize GLFW. Most GLFW functions will not work before doing this.
-		if (GLFW.glfwInit() != GL11.GL_TRUE) {
-			throw new IllegalStateException("Unable to initialize GLFW");
+		try {
+			Display.setTitle("Bomberman. The real deal.");
+			Display.setResizable(false);
+			Display.setDisplayMode(new DisplayMode(frameWidth, frameHeight));
+			Display.create();
 		}
-
-		// Configure our window
-		// optional, the current window hints are already the default
-		GLFW.glfwDefaultWindowHints(); 
-		// the window will stay hidden after creation
-		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_FALSE); 
-		// the window will be resizable
-		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_FALSE); 
-
-		// Create the window
-		windowHandle = GLFW.glfwCreateWindow(frameWidth, frameHeight,
-				"Hello World!", 0, 0);
-		if (windowHandle == 0) {
-			throw new RuntimeException("Failed to create the GLFW window");
+		catch (Exception e){
+			e.printStackTrace();
 		}
-
-		ControllerManager.getInstance().setWindowHandle(windowHandle);
-
-		ByteBuffer vidmode = GLFW
-				.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-		// Center our window
-		GLFW.glfwSetWindowPos(windowHandle,
-				(GLFWvidmode.width(vidmode) - frameWidth) / 2,
-				(GLFWvidmode.height(vidmode) - frameHeight) / 2);
-		GLFW.glfwMakeContextCurrent(windowHandle);
-		GLFW.glfwSwapInterval(1);
-		GLContext.createFromCurrent();
-		GLFW.glfwShowWindow(windowHandle);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -83,23 +52,10 @@ public class Main {
 		// Create and initialize game
 		game = new Game();
 		game.init();
-
-		/*
-		 * AbstractController keyboard = ControllerManager.getInstance()
-		 * .getController(EController.LWJGLKEYBOARDCONTROLLER);
-		 * keyboard.addKeybind(GLFW.GLFW_KEY_ESCAPE, new K1());
-		 * keyboard.startController();
-		 * 
-		 * AbstractController nintendo = ControllerManager.getInstance()
-		 * .getController(EController.USBCONTROLLER); if (nintendo != null) {
-		 * nintendo.startController(); nintendo.addKeybind( 0xffffffff &
-		 * ~nintendo.getDefaultBitmaskValue(), new K1()); } else {
-		 * System.out.println("Nintendo controller is null"); }
-		 */
 		
 		anim = new SpriteAnimation("townfolk_m.json");
-		//AudioManager.playMusic("menu.ogg");
-		AudioManager.playSound(SoundType.BOMB_EXPLODE);
+		AudioManager.playMusic("menu.ogg");
+		//AudioManager.playSound(SoundType.BOMB_EXPLODE);
 	}
 
 	private void loop() {
@@ -109,9 +65,11 @@ public class Main {
 		GL11.glEnable(GL11.GL_BLEND);
 	    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
    
-		while (GLFW.glfwWindowShouldClose(windowHandle) == GL11.GL_FALSE) {
+		while (!Display.isCloseRequested()) {
 		    t0 = System.currentTimeMillis(); 
-		    
+			deltaTime = t0 - t1;
+			t1 = t0;
+			
 			// Poll controllers for input
 			ControllerManager.getInstance().pollControllers();
 
@@ -129,33 +87,15 @@ public class Main {
 			// Render game and swap buffers
 			game.render();
 			anim.render(new Vector2(0.25f, 0.25f), 0, new Vector2(0.5f, -0.5f));
-			GLFW.glfwSwapBuffers(windowHandle);
-
-			// Calculate difference between frame start and frame end and set
-			// thread to sleep
-			t1 = System.currentTimeMillis();
-			deltaTime = t1 - t0;
-			deltaTime = Math.min(Math.max(SLEEP_MIN, deltaTime), SLEEP_DELTA);			
-			
-			//System.out.println(deltaTime);
-			
-			/*try {
-				Thread.sleep(deltaTime);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}*/
+			Display.update();
+			Display.sync(TARGET_FPS);
 		}
 	}
 
 	public void run() {
-		try {
-			init();
-			loop();
-			destroy();
-		} finally {
-			// Terminate GLFW and release the GLFWerrorfun
-			GLFW.glfwTerminate();
-		}
+		init();
+		loop();
+		destroy();
 	}
 
 	public static void main(String[] args) {

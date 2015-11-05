@@ -16,15 +16,22 @@ import controls.ControllerManager;
 import controls.EController;
 
 public class PlayerEntity extends Entity<SpriteAnimation> {
-	private float moveSpeed = 0.005f;
+	private float moveSpeed = 0.5f;
 	private Vector2 moveDirection = new Vector2();
 	private AbstractController keyboard;
 
 	@Override
+	protected void initEntity() {
+		super.initEntity();
+		Vector2 fullScale = sprite.getHalfSize().copy().mul(getScale()).mul(2.0f);
+		body.attachBoxCollider(fullScale, new Vector2(0, 0), 0);
+	}
+	
+	@Override
 	public void update(float deltaTime) {
 		super.update(deltaTime);
-		getPosition().add(moveDirection);
-		moveDirection.set(0, 0);
+		applyForce(moveDirection);
+		moveDirection.reset();
 	}
 
 	public void readKeybindings() {
@@ -58,19 +65,19 @@ public class PlayerEntity extends Entity<SpriteAnimation> {
 	}
 
 	public void moveUp() {
-		moveDirection.setY(moveSpeed);
+		moveDirection.y = moveSpeed;
 	}
 
 	public void moveDown() {
-		moveDirection.setY(-moveSpeed);
+		moveDirection.y = -moveSpeed;
 	}
 
 	public void moveLeft() {
-		moveDirection.setX(-moveSpeed);
+		moveDirection.x = -moveSpeed;
 	}
 
 	public void moveRight() {
-		moveDirection.setX(moveSpeed);
+		moveDirection.x = moveSpeed;
 	}
 
 	class K1 implements ControllerEventListener {

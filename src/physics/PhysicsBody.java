@@ -28,9 +28,8 @@ public class PhysicsBody {
 	private ArrayList<Fixture> fixtureList = new ArrayList<Fixture>(1);
 	
 	// Internal variables for faster getters
-	private Vector2 bodyPosition = new Vector2();
 	private float bodyRotation;
-	private Vector2 bodyScale = new Vector2(1.0f, -1.0f);
+	private Vector2 bodyScale = new Vector2(1.0f, 1.0f);
 	
 	/**
 	 * Creates a body with default settings.
@@ -54,12 +53,20 @@ public class PhysicsBody {
 	public PhysicsBody(BodyDef def){
 		createBody(def, null);
 	}
-		
-	public void attachBoxCollider(Vector2 size, Vector2 position, float rotation){		
+	
+	public void applyForce(Vector2 dir){
+		//body.applyForceToCenter(dir.toVec2());
+		body.setLinearVelocity(dir.toVec2());
+	}
+	
+	public void attachBoxCollider(Vector2 size, Vector2 position, float rotation){
+		Vec2 size2 = size.toVec2().mul(0.5f);
+		Vec2 pos2 = position.toVec2();
+				
 		PolygonShape polygon = new PolygonShape();
-		polygon.setAsBox(size.x(), size.y());
+		polygon.setAsBox(size2.x, size2.y);
 		if (position != null){
-			polygon.centroid(new Transform(position.toVec2(), new Rot(rotation)));
+			polygon.centroid(new Transform(pos2, new Rot(rotation)));
 		}
 		
 		attachCollider(polygon);
@@ -99,6 +106,8 @@ public class PhysicsBody {
 		if (def == null){
 			def = new BodyDef();
 			def.allowSleep = true;
+			def.linearDamping = 0.1f;
+			def.fixedRotation = true;
 			def.type = BodyType.DYNAMIC;
 			def.userData = e;
 		}
@@ -113,8 +122,12 @@ public class PhysicsBody {
 		body = null;
 	}
 	
+	public Body getBody(){
+		return body;
+	}
+	
 	public Vector2 getPosition(){
-		return bodyPosition;
+		return Vector2.fromVec2(body.getPosition());
 	}
 	
 	public float getRotation(){
@@ -126,18 +139,15 @@ public class PhysicsBody {
 	}
 	
 	public void setPosition(Vector2 pos){
-		bodyPosition = pos;
 		body.setTransform(Vector2.toVec2(pos), bodyRotation);
 	}
 	
 	public void setPosition(float x, float y){
-		bodyPosition.set(x, y);
-		setPosition(bodyPosition);
+		setPosition(new Vector2(x, y));
 	}
 	
 	public void setRotation(float angle){
-		bodyRotation = angle;
-		body.setTransform(Vector2.toVec2(bodyPosition), angle);
+		body.setTransform(body.getPosition(), angle);
 	}
 	
 	/**
@@ -146,7 +156,6 @@ public class PhysicsBody {
 	 * @param scale - desired sprite scale
 	 */
 	public void setScale(Vector2 scale){
-		scale.setY(-scale.y());
 		bodyScale = scale;
 	}
 }

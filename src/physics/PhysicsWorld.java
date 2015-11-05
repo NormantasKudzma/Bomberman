@@ -2,16 +2,16 @@ package physics;
 
 import game.Entity;
 
+import java.util.ArrayList;
+
 import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
-import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.World;
 
 public class PhysicsWorld {
 	private static final PhysicsWorld INSTANCE = new PhysicsWorld();
+	private static ArrayList<PhysicsBody> bodyList = new ArrayList<PhysicsBody>();
 	private World world;
 	
 	private PhysicsWorld(){
@@ -27,11 +27,19 @@ public class PhysicsWorld {
 	}
 	
 	public PhysicsBody getBodyFromDef(BodyDef def){
-		return new PhysicsBody(def);
+		PhysicsBody b = new PhysicsBody(def);
+		bodyList.add(b);
+		return b;
+	}
+	
+	public final ArrayList<PhysicsBody> getBodyList(){
+		return bodyList;
 	}
 	
 	public PhysicsBody getNewBody(Entity e){
-		return new PhysicsBody(e);
+		PhysicsBody b = new PhysicsBody(e);
+		bodyList.add(b);
+		return b;
 	}
 	
 	public BodyDef getRawBodyDef(){

@@ -42,6 +42,13 @@ public class SpriteAnimation implements IRenderable, IUpdatable{
 		loadSpriteSheet(path);
 	}
 	
+	public Vector2 getHalfSize() {
+		if (spriteArray != null && spriteArray[0][0] != null){
+			return spriteArray[0][0].getHalfSize();
+		}
+		return null;
+	}
+	
 	private void loadSpriteSheet(String path){
 		JSONObject obj = ConfigManager.loadConfigAsJson(Paths.ANIMATIONS + path);
 		Vector2 sheetSize = new Vector2(obj.getInt("width"), obj.getInt("height"));
@@ -111,4 +118,5 @@ public class SpriteAnimation implements IRenderable, IUpdatable{
 			currentFrame = (currentFrame + 1) % numFrames;
 		}
 	}
+
 }

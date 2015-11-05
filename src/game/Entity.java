@@ -7,15 +7,18 @@ import physics.PhysicsWorld;
 import utils.Vector2;
 
 public abstract class Entity<S extends IRenderable & IUpdatable> implements ICollidable, IRenderable, IUpdatable {
-	private PhysicsBody body;
-	private boolean isLifetimeFinite = false;
-	private float lifetime = 0.0f;
-	private S sprite;
-	private boolean toBeDestroyed;
+	protected PhysicsBody body;
+	protected boolean isLifetimeFinite = false;
+	protected float lifetime = 0.0f;
+	protected S sprite;
+	protected boolean toBeDestroyed;
 	
 	public Entity(){
 		toBeDestroyed = false;
-		initEntity();
+	}
+	
+	public void applyForce(Vector2 dir){
+		body.applyForce(dir);
 	}
 	
 	public void destroy(){

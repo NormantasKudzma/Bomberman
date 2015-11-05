@@ -17,6 +17,11 @@ public class Sprite2D implements IRenderable, IUpdatable {
 	private Vector2 internalScale = new Vector2(1.0f, 1.0f);	// Sprite size in game units (0;0)->(2;2)
 	private Vector2 topLeft;
 	private Vector2 botRight;
+	private Vector2 halfSize;
+	
+	// Internal vectors for render calculations
+	private Vector2 renderOffset = new Vector2();
+	private Vector2 renderFullScale = new Vector2();
 	
 	public Sprite2D(){}
 	
@@ -28,30 +33,23 @@ public class Sprite2D implements IRenderable, IUpdatable {
 		this(tex, new Vector2(), null);
 	}
 	
-	public Sprite2D(String path, Vector2 tl, Vector2 br){		
+	public Sprite2D(String path, Vector2 tl, Vector2 br){
 		loadTexture(path);
-		topLeft = tl;
-		if (br == null) {
-			botRight = new Vector2(texture.getWidth(), texture.getHeight());
-		}
-		else {
-			botRight = br;
-		}
+		setClippingBounds(tl, br);
 	}
 	
 	public Sprite2D(Texture tex, Vector2 tl, Vector2 br){
 		texture = tex;
-		topLeft = tl;
-		if (br == null) {
-			botRight = new Vector2(texture.getWidth(), texture.getHeight());
-		}
-		else {
-			botRight = br;
-		}
+		setClippingBounds(tl, br);
+		//internalScale.set(DEFAULT_SPRITE_SIZE / texture.getWidth(), DEFAULT_SPRITE_SIZE / texture.getHeight());
 	}
 	
-	public Vector2 getSize(){
-		return new Vector2(texture.getImageWidth(), texture.getImageHeight());
+	public Vector2 getInternalScale(){
+		return internalScale;
+	}
+	
+	public Vector2 getHalfSize(){
+		return halfSize;
 	}
 	
 	public Texture getTexture(){
@@ -80,14 +78,15 @@ public class Sprite2D implements IRenderable, IUpdatable {
 	public void render(Vector2 position, float rotation, Vector2 scale) {
 		// store the current model matrix
         glPushMatrix();
-        glLoadIdentity();
         // bind to the appropriate texture for this sprite
         texture.bind();
  
         // translate to the right location and prepare to draw
-        glTranslatef(position.x - 1.0f - topLeft.x * scale.x, -position.y + 1.0f - topLeft.y * scale.y, 0);        
-        glScalef(scale.x(), scale.y(), 1.0f);
-        glScalef(internalScale.x, internalScale.y, 1.0f);
+        renderFullScale.set(scale).mul(internalScale);
+        renderOffset.set(halfSize).mul(renderFullScale);
+        
+        glTranslatef(position.x - topLeft.x * renderFullScale.x - renderOffset.x, position.y + topLeft.y * renderFullScale.y + renderOffset.y, 0);
+        glScalef(renderFullScale.x, -renderFullScale.y, 1.0f);
         glRotatef(rotation, 0, 0, 1.0f);
  
         // draw a quad textured to match the sprite
@@ -103,7 +102,7 @@ public class Sprite2D implements IRenderable, IUpdatable {
             glVertex2f(botRight.x, botRight.y);
  
             glTexCoord2f(botRight.x, topLeft.y);
-            glVertex2f(botRight.x, topLeft.y);           
+            glVertex2f(botRight.x, topLeft.y);         
         }
         glEnd();
  
@@ -112,10 +111,22 @@ public class Sprite2D implements IRenderable, IUpdatable {
 	}
 	
 	public void setClippingBounds(Vector2 topLeftCorner, Vector2 bottomRightCorner){
-		topLeft = topLeftCorner;
-		botRight = bottomRightCorner;
-	}
+		if (topLeftCorner == null){
+			topLeft = new Vector2();
+		}
+		else {
+			topLeft = topLeftCorner;
+		}
 
+		if (bottomRightCorner == null) {
+			botRight = new Vector2(texture.getWidth(), texture.getHeight());
+		}
+		else {
+			botRight = bottomRightCorner;
+		}
+		
+		halfSize = Vector2.sub(botRight, topLeft).mul(0.5f);
+	}
 	
 	@Override
 	public void update(float deltaTime) {

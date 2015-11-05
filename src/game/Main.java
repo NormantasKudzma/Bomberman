@@ -5,12 +5,17 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
-import graphics.SpriteAnimation;
+import graphics.Sprite2D;
 
+import org.jbox2d.collision.AABB;
+import org.jbox2d.dynamics.BodyType;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
+import physics.PhysicsBody;
+import physics.PhysicsWorld;
+import utils.Paths;
 import utils.Vector2;
 import audio.AudioManager;
 import controls.ControllerManager;
@@ -20,13 +25,11 @@ public class Main {
 	//private static final long SLEEP_DELTA = 1000 / TARGET_FPS + 1; // Target sleep time between frames
 	//private static final long SLEEP_MIN = 5; // Absolute minimum sleep time between frames (if too slow render)
 
-	private int frameHeight = 720;
-	private int frameWidth = 1280;
+	private int frameHeight = 640;
+	private int frameWidth = 720;
 	private long deltaTime;
 	private Game game;
-	private long t0, t1; // Frame start (t0) and frame end (t1) time
-
-	SpriteAnimation anim;
+	private long t0, t1; // Frame start/end time
 	
 	private void destroy() {
 		game.destroy();
@@ -53,8 +56,7 @@ public class Main {
 		game = new Game();
 		game.init();
 		
-		anim = new SpriteAnimation("townfolk_m.json");
-		AudioManager.playMusic("menu.ogg");
+		//AudioManager.playMusic("menu.ogg");
 		//AudioManager.playSound(SoundType.BOMB_EXPLODE);
 	}
 
@@ -75,18 +77,19 @@ public class Main {
 
 			// Update game logic
 			game.update(deltaTime * 0.001f);
-			anim.update(deltaTime * 0.001f);
 
 			// Prepare for rendering
 			GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			GL11.glOrtho(0, frameWidth, 0, frameHeight, 0, 20);
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glLoadIdentity();
+			GL11.glTranslatef(-1.0f, -1.0f, 0.0f);
+			//GL11.glScalef(1.0f, -1.0f, 1.0f);
 
 			// Render game and swap buffers
 			game.render();
-			anim.render(new Vector2(0.25f, 0.25f), 0, new Vector2(0.5f, -0.5f));
+			
 			Display.update();
 			Display.sync(TARGET_FPS);
 		}

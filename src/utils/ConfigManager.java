@@ -4,9 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -15,6 +16,8 @@ import java.nio.file.Files;
 
 import org.json.JSONObject;
 import org.lwjgl.BufferUtils;
+
+import sun.misc.IOUtils;
 
 public class ConfigManager {
 	private static String commentDelim = "#";
@@ -27,7 +30,9 @@ public class ConfigManager {
 	public static Config<String, String> loadConfigAsPairs(String path,
 			boolean isHeaderUnique) {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(path));
+			URL url = Thread.currentThread().getContextClassLoader().getResource(path);
+			System.out.println("Tryload " + url.toString());
+			BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 			Config<String, String> cfg = new Config<String, String>();
 			String line;
 			String[] params;
@@ -62,10 +67,14 @@ public class ConfigManager {
 
 	public static JSONObject loadConfigAsJson(String path) {
 		try {
-			if (!path.endsWith(".json")){
+			if (!path.endsWith(".json")) {
 				path += ".json";
 			}
-			byte buffer[] = Files.readAllBytes(java.nio.file.Paths.get(path));
+			URL url = Thread.currentThread().getContextClassLoader().getResource(path);
+			System.out.println("Tryload " + url.toString());
+			//byte buffer[] = Files.readAllBytes(java.nio.file.Paths.get(url.toString()));		
+			byte buffer[] = sun.misc.IOUtils.readFully(url.openStream(), -1, true);			
+			
 			String contents = new String(buffer);
 			JSONObject obj = new JSONObject(contents);
 			return obj;
@@ -76,8 +85,7 @@ public class ConfigManager {
 		return null;
 	}
 
-	public static ByteBuffer ioResourceToByteBuffer(String resource,
-			int bufferSize) throws IOException {
+	public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
 		ByteBuffer buffer;
 
 		File file = new File(resource);
@@ -123,7 +131,7 @@ public class ConfigManager {
 		buffer.flip();
 		return buffer;
 	}
-	
+
 	private static ByteBuffer resizeBuffer(ByteBuffer buffer, int newCapacity) {
 		ByteBuffer newBuffer = BufferUtils.createByteBuffer(newCapacity);
 		buffer.flip();

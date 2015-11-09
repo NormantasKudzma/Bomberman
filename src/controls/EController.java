@@ -3,7 +3,8 @@ package controls;
 public enum EController {
 	INVALIDCONTROLLER,
 	USBCONTROLLER,
-	LWJGLKEYBOARDCONTROLLER;
+	LWJGLKEYBOARDCONTROLLER,
+	LWJGLMOUSECONTROLLER;
 	
 	public static EController getFromString(String name){
 		EController types [] = EController.values();

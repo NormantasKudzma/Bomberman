@@ -2,16 +2,15 @@ package game;
 
 import graphics.SpriteAnimation;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
+import utils.Config;
+import utils.ConfigManager;
+import utils.Pair;
 import utils.Paths;
 import utils.Vector2;
 import controls.AbstractController;
 import controls.ControllerEventListener;
-import controls.ControllerKeybind;
 import controls.ControllerManager;
 import controls.EController;
 
@@ -35,31 +34,18 @@ public class PlayerEntity extends Entity<SpriteAnimation> {
 	}
 
 	public void readKeybindings() {
+		Config<String, String> readPairs = ConfigManager.loadConfigAsPairs(
+				Paths.DEFAULT_KEYBINDS, true);
 		keyboard = ControllerManager.getInstance().getController(
-				EController.LWJGLKEYBOARDCONTROLLER);
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(Paths.CONFIGS + "DefaultKeybinds"));
-			String line;
-			line = br.readLine(); 	// HACK, skip first line
-			while ((line = br.readLine()) != null){
-				if (line.isEmpty() || line.startsWith("#")){
-					continue;
-				}
-				
-				String [] params = line.split("=");
-				if (params.length != 2){
-					continue;
-				}
-				
-				long bitmask = Long.parseLong(params[0]);
-				Method method = this.getClass().getMethod(params[1]);
-
-				keyboard.addKeybind(new ControllerKeybind(bitmask, new K1(method, this)));
+				EController.getFromString((String) readPairs.firstLine.value));
+		for (Pair<String, String> i : readPairs.contents) {
+			try {
+				keyboard.addKeybind(Long.parseLong(i.key), new K1(getClass()
+						.getMethod(i.value), this));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			br.close();
-		}
-		catch (Exception e){
-			e.printStackTrace();
 		}
 		keyboard.startController();
 	}
@@ -90,14 +76,11 @@ public class PlayerEntity extends Entity<SpriteAnimation> {
 		}
 
 		@Override
-		public void handleEvent(long mask) {
+		public void handleEvent(long mask, int... params) {
 			try {
 				metodas.invoke(player);
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+			} 
+			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

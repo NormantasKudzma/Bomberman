@@ -296,7 +296,9 @@ public class TextureLoader {
 		// due to an issue with ImageIO and mixed signed code
 		// we are now using good oldfashioned ImageIcon to load
 		// images and the paint it on top of a new BufferedImage
-		Image img = new ImageIcon(ref).getImage();
+		URL url = getClass().getClassLoader().getResource(ref);
+		System.out.println("Tryload " + url.toString());
+		Image img = new ImageIcon(url).getImage();
 		BufferedImage bufferedImage = new BufferedImage(img.getWidth(null),
 				img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = bufferedImage.getGraphics();

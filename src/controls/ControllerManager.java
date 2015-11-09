@@ -21,6 +21,7 @@ public class ControllerManager{
 	private ArrayList<Pair<Short, Short>> allowedUsbProductVendorList;
 	private Context libUsbContext;
 	private LwjglKeyboardController lwjglKeyboardController;
+	private LwjglMouseController lwjglMouseController;
 	private ArrayList<UsbController> usbControllerList;
 	private DeviceList usbDeviceList;
 	
@@ -105,6 +106,13 @@ public class ControllerManager{
 					return usbControllerList.get(index);
 				}
 				return null;
+			}
+			case LWJGLMOUSECONTROLLER:{
+				if (lwjglMouseController == null){
+					lwjglMouseController = new LwjglMouseController();
+					allControllers.add(lwjglMouseController);
+				}
+				return lwjglMouseController;
 			}
 			default:{
 				// Invalid request,

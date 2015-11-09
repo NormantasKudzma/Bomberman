@@ -11,4 +11,5 @@ public class Paths {
 	public static final String MUSIC = RESOURCES + "music/";
 	
 	public static final String ALLOWED_DEVICES = CONFIGS + "AllowedDevices.dat";
+	public static final String DEFAULT_KEYBINDS = CONFIGS + "DefaultKeybinds"; 
 }

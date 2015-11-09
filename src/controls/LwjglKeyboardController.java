@@ -34,6 +34,6 @@ public class LwjglKeyboardController extends AbstractController{
 	
 	@Override
 	public void startController() {
-		//GLFW.glfwSetKeyCallback(windowHandle, glfwCallback);
+
 	}
 }

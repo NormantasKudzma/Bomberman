@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 
 import physics.PhysicsWorld;
@@ -56,7 +58,9 @@ public class Game implements IUpdatable {
 		final int mapSize = 33;
 		char[][] map = new char[mapSize][mapSize];
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(Paths.MAPS + "map01"));
+			URL url = Thread.currentThread().getContextClassLoader().getResource(Paths.MAPS + "map01");
+			System.out.println("Tryload " + url.toString());
+			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
 			int i = 0; // array i index
 			int j = 0; // array j index
 
@@ -74,11 +78,11 @@ public class Game implements IUpdatable {
 					}
 				}
 			}
-			catch (IOException e) {
+			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		catch (FileNotFoundException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 

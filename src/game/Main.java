@@ -5,20 +5,16 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
-import graphics.Sprite2D;
 
-import org.jbox2d.collision.AABB;
-import org.jbox2d.dynamics.BodyType;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
-import physics.PhysicsBody;
-import physics.PhysicsWorld;
-import utils.Paths;
-import utils.Vector2;
 import audio.AudioManager;
+import controls.ControllerEventListener;
 import controls.ControllerManager;
+import controls.EController;
+import controls.LwjglMouseController;
 
 public class Main {
 	private static final int TARGET_FPS = 60;
@@ -38,7 +34,7 @@ public class Main {
 		Display.destroy();
 	}
 
-	private void init() {
+	private void init(){
 		try {
 			Display.setTitle("Bomberman. The real deal.");
 			Display.setResizable(false);
@@ -58,6 +54,18 @@ public class Main {
 		
 		//AudioManager.playMusic("menu.ogg");
 		//AudioManager.playSound(SoundType.BOMB_EXPLODE);
+		
+		LwjglMouseController c = (LwjglMouseController) ControllerManager.getInstance().getController(EController.LWJGLMOUSECONTROLLER);
+		c.addKeybind(0, new ControllerEventListener(){
+
+			@Override
+			public void handleEvent(long eventArg, int... params) {
+				if (params[2] == 1){
+					System.out.println("CLICK " + eventArg + "\tx" + params[0] + "\ty" + params[1] + "\tstate " + params[2]);
+				}
+			}
+			
+		});
 	}
 
 	private void loop() {

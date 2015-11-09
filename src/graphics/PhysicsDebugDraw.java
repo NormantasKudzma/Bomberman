@@ -1,37 +1,27 @@
 package graphics;
 
-import java.awt.Font;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.FloatBuffer;
-
-import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.collision.AABB;
-import org.jbox2d.common.Color3f;
-import org.jbox2d.common.IViewportTransform;
-import org.jbox2d.common.MathUtils;
-import org.jbox2d.common.Transform;
-import org.jbox2d.common.Vec2;
-import org.lwjgl.BufferUtils;
+import org.jbox2d.dynamics.Fixture;
 import org.lwjgl.opengl.GL11;
 
 import physics.PhysicsBody;
 import physics.PhysicsWorld;
-
-import utils.Paths;
 import utils.Vector2;
 
 public class PhysicsDebugDraw {
 	 public static void render(){
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glColor3f(1.0f, 0.25f, 0.1f);
-		Vector2 localpos;
+
 		AABB aabb;
 		Vector2 ul, br;
+		Fixture fixture;
 		for (PhysicsBody b : PhysicsWorld.getInstance().getBodyList()){
 			//localpos = b.getPosition();
-			aabb = b.getBody().getFixtureList().getAABB(0);
+			if ((fixture = b.getBody().getFixtureList()) == null){
+				continue;
+			}
+			aabb = fixture.getAABB(0);
 			ul = Vector2.fromVec2(aabb.upperBound)/*.sub(localpos)*/;
 			br = Vector2.fromVec2(aabb.lowerBound)/*.add(localpos)*/;
 			GL11.glPushMatrix();

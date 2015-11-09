@@ -1,5 +1,7 @@
 package utils;
 
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,12 +14,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
 
 import org.json.JSONObject;
 import org.lwjgl.BufferUtils;
-
-import sun.misc.IOUtils;
 
 public class ConfigManager {
 	private static String commentDelim = "#";
@@ -137,5 +136,17 @@ public class ConfigManager {
 		buffer.flip();
 		newBuffer.put(buffer);
 		return newBuffer;
+	}
+
+	public static Font loadFont(String path, int size){
+		try {
+		     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		     URL url = Thread.currentThread().getContextClassLoader().getResource(path);
+		     Font font = Font.createFont(Font.TRUETYPE_FONT, url.openStream()).deriveFont(size);
+		     ge.registerFont(font);
+		     return font;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

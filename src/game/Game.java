@@ -5,9 +5,6 @@ import graphics.Sprite2D;
 import graphics.SpriteAnimation;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -125,8 +122,7 @@ public class Game implements IUpdatable {
 	 * Main game update method. Physics and entities should be moved during
 	 * update.
 	 * 
-	 * @param deltaTime
-	 *            - time that has passed since last frame (in ms)
+	 * @param deltaTime - time that has passed since last frame (in ms)
 	 */
 	public void update(float deltaTime) {
 		// Update physics

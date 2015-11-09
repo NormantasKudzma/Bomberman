@@ -22,6 +22,8 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL41;
 import org.lwjgl.util.glu.GLU;
+
+import utils.Vector2;
  
  
 /**
@@ -34,7 +36,7 @@ import org.lwjgl.util.glu.GLU;
  * 
  * @new version edited by David Aaron Muhar (bobjob)
  */
-public class TrueTypeFont {
+public class TrueTypeFont implements IRenderable{
     public final static int
         ALIGN_LEFT = 0,
         ALIGN_RIGHT = 1,
@@ -69,6 +71,7 @@ public class TrueTypeFont {
     /** The font metrics for our Java AWT font */
     private FontMetrics fontMetrics;
  
+    private String text;
      
     private int correctL = 9, correctR = 8;
      
@@ -231,8 +234,7 @@ public class TrueTypeFont {
         }
     }
      
-    private void drawQuad(float drawX, float drawY, float drawX2, float drawY2,
-            float srcX, float srcY, float srcX2, float srcY2) {
+    private void drawQuad(float drawX, float drawY, float drawX2, float drawY2, float srcX, float srcY, float srcX2, float srcY2) {
         float DrawWidth = drawX2 - drawX;
         float DrawHeight = drawY2 - drawY;
         float TextureSrcX = srcX / textureWidth;
@@ -279,36 +281,33 @@ public class TrueTypeFont {
         return fontHeight;
     }
  
-    public int getLineHeight() {
+    public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public int getLineHeight() {
         return fontHeight;
     }
  
-    public void drawString(float x, float y,
-            String whatchars, float scaleX, float scaleY) {
-        drawString(x,y,whatchars, 0, whatchars.length()-1, scaleX, scaleY, ALIGN_LEFT);
+    public void render(Vector2 pos, float rotation, Vector2 scale) {
+        drawString(pos, text, scale, ALIGN_LEFT);
     }
-    public void drawString(float x, float y,
-            String whatchars, float scaleX, float scaleY, int format) {
-        drawString(x,y,whatchars, 0, whatchars.length()-1, scaleX, scaleY, format);
-    }
+    
+    public void drawString(Vector2 pos, String whatchars, Vector2 scale, int format) {
+        drawString(pos, whatchars, 0, whatchars.length()-1, scale, format);
+    } 
  
- 
-    public void drawString(float x, float y,
-            String whatchars, int startIndex, int endIndex,
-            float scaleX, float scaleY,
-            int format
-            ) {
-         
+    public void drawString(Vector2 pos, String whatchars, int startIndex, int endIndex, Vector2 scale, int format) {         
         IntObject intObject = null;
         int charCurrent;
-         
- 
         int totalwidth = 0;
         int i = startIndex, d, c;
         float startY = 0;
- 
- 
-         
+     
         switch (format) {
             case ALIGN_RIGHT: {
                 d = -1;
@@ -375,9 +374,9 @@ public class TrueTypeFont {
                         //if center get next lines total width/2;
                     }
                     else {
-                        drawQuad((totalwidth + intObject.width) * scaleX + x, startY * scaleY + y,
-                            totalwidth * scaleX + x,
-                            (startY + intObject.height) * scaleY + y, intObject.storedX + intObject.width,
+                        drawQuad((totalwidth + intObject.width) * scale.x + pos.x, startY * scale.y + pos.y,
+                            totalwidth * scale.x + pos.x,
+                            (startY + intObject.height) * scale.y + pos.y, intObject.storedX + intObject.width,
                             intObject.storedY + intObject.height,intObject.storedX, 
                             intObject.storedY);
                         if (d > 0) totalwidth += (intObject.width-c) * d ;
@@ -478,4 +477,5 @@ public class TrueTypeFont {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         GL11.glDeleteTextures(scratch);
     }
+
 }

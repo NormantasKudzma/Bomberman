@@ -293,9 +293,6 @@ public class TextureLoader {
 	 *             Indicates a failure to find a resource
 	 */
 	private BufferedImage loadImage(String ref) throws IOException {
-		// due to an issue with ImageIO and mixed signed code
-		// we are now using good oldfashioned ImageIcon to load
-		// images and the paint it on top of a new BufferedImage
 		URL url = getClass().getClassLoader().getResource(ref);
 		System.out.println("Tryload " + url.toString());
 		Image img = new ImageIcon(url).getImage();

@@ -132,17 +132,17 @@ public class UsbController extends AbstractController{
 			bitmask = buffer.getLong() ^ defaultDataValue;
 			if (bitmask != 0){
 				if (defaultCallback != null){
-					defaultCallback.getCallback().handleEvent(bitmask);
+					defaultCallback.getCallback().handleEvent(bitmask, null);
 				}
 				
 				if (oneClickCallback != null){
-					oneClickCallback.getCallback().handleEvent(bitmask);
+					oneClickCallback.getCallback().handleEvent(bitmask, null);
 					oneClickCallback = null;
 				}
 				
 				for (ControllerKeybind bind : keyBindings){
 					if ((bind.getBitmask() & bitmask) != 0){
-						bind.getCallback().handleEvent(bitmask);
+						bind.getCallback().handleEvent(bitmask, null);
 					}
 				}
 			}

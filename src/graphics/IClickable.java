@@ -3,6 +3,7 @@ package graphics;
 import utils.Vector2;
 
 public interface IClickable {
-	public boolean isClicked(Vector2 clickPos);
-	public void onClick();
+	public boolean isMouseOver(Vector2 pos);
+	public boolean onHover(Vector2 pos);
+	public boolean onClick(Vector2 pos);
 }

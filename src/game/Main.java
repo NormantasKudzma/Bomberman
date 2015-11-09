@@ -5,11 +5,16 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
+import graphics.Button;
+import graphics.TrueTypeFont;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
+import utils.ConfigManager;
+import utils.Paths;
+import utils.Vector2;
 import audio.AudioManager;
 import controls.ControllerEventListener;
 import controls.ControllerManager;
@@ -26,6 +31,9 @@ public class Main {
 	private long deltaTime;
 	private Game game;
 	private long t0, t1; // Frame start/end time
+	
+	Button btn;
+	TrueTypeFont ttf;
 	
 	private void destroy() {
 		game.destroy();
@@ -55,16 +63,30 @@ public class Main {
 		//AudioManager.playMusic("menu.ogg");
 		//AudioManager.playSound(SoundType.BOMB_EXPLODE);
 		
+		btn = new Button();
+		btn.setText("hi");
+		btn.setPosition(1.5f, 1.5f);
+		btn.setScale(new Vector2(6.0f, 2.0f));
+		
+		ttf = new TrueTypeFont(ConfigManager.loadFont(Paths.DEFAULT_FONT, 14), false);
+		ttf.setText("HII");
+		
 		LwjglMouseController c = (LwjglMouseController) ControllerManager.getInstance().getController(EController.LWJGLMOUSECONTROLLER);
 		c.addKeybind(0, new ControllerEventListener(){
 
 			@Override
-			public void handleEvent(long eventArg, int... params) {
-				if (params[2] == 1){
-					System.out.println("CLICK " + eventArg + "\tx" + params[0] + "\ty" + params[1] + "\tstate " + params[2]);
+			public void handleEvent(long eventArg, Vector2 pos, int... params) {
+				if (params[0] == 1){
+					System.out.println("CLICK " + eventArg + "\tx" + pos.x + "\ty" + pos.y + "\tstate " + params[0]);
+					System.out.println(btn.onClick(pos));
 				}
+			}			
+		});
+		c.setMouseMoveListener(new ControllerEventListener(){
+			@Override
+			public void handleEvent(long eventArg, Vector2 pos, int... params) {
+				btn.onHover(pos);
 			}
-			
 		});
 	}
 
@@ -97,6 +119,8 @@ public class Main {
 
 			// Render game and swap buffers
 			game.render();
+			btn.render();
+			//ttf.render(Vector2.one, 0, Vector2.one);
 			
 			Display.update();
 			Display.sync(TARGET_FPS);

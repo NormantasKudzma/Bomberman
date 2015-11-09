@@ -9,6 +9,7 @@ import utils.Vector2;
 public class BaseDialog extends Entity<Sprite2D> implements IClickable{
 	private ArrayList<Button> clickables;
 	private boolean isVisible = false;
+	private Button lastClickable;
 	
 	public BaseDialog(){
 		
@@ -23,31 +24,26 @@ public class BaseDialog extends Entity<Sprite2D> implements IClickable{
 	}
 	
 	@Override
-	public boolean isClicked(Vector2 clickPos) {
+	public boolean isMouseOver(Vector2 pos) {
 		if (!isVisible){
 			return false;
 		}
 		
-		boolean ret = clickPos.x < getPosition().x + sprite.getHalfSize().x &&
-				      clickPos.x > getPosition().x - sprite.getHalfSize().x &&
-				      clickPos.y < getPosition().y + sprite.getHalfSize().y &&
-				      clickPos.y > getPosition().y - sprite.getHalfSize().y;
-				      
-	    if (ret){
-	    	for (Button clickable : clickables){
-	    		if (clickable.isClicked(clickPos)){
-	    			clickable.onClick();
-	    			break;
-	    		}
-	    	}
-	    }
-				      
-		return ret;
+		return  pos.x < getPosition().x + sprite.getRenderOffset().x &&
+				pos.x > getPosition().x - sprite.getRenderOffset().x &&
+				pos.y < getPosition().y + sprite.getRenderOffset().y &&
+			    pos.y > getPosition().y - sprite.getRenderOffset().y;
 	}
 
 	@Override
-	public void onClick() {
-		//stub
+	public boolean onClick(Vector2 pos) {
+		boolean ret = isMouseOver(pos);
+		
+		if (lastClickable != null){
+			lastClickable.onClick(pos);
+		}
+		
+		return ret;
 	}
 	
 	@Override
@@ -62,5 +58,22 @@ public class BaseDialog extends Entity<Sprite2D> implements IClickable{
 	
 	public void setVisible(boolean isVisible){
 		this.isVisible = isVisible;
+	}
+
+	@Override
+	public boolean onHover(Vector2 pos) {
+		boolean ret = isMouseOver(pos);
+	    
+		lastClickable = null;
+		if (ret){
+			for (Button clickable : clickables){
+				if (clickable.onHover(pos)){
+					lastClickable = clickable;
+					break;
+				}
+			}
+		}
+	     
+		return ret;
 	}
 }

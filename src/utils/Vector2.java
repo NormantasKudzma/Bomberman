@@ -44,9 +44,10 @@ public class Vector2 {
 		return this;
 	}
 	
-	public void set(float x, float y){
+	public Vector2 set(float x, float y){
 		this.x = x;
 		this.y = y;
+		return this;
 	}
 	
 	public void setX(float x){
@@ -87,6 +88,12 @@ public class Vector2 {
 	public Vector2 mul(float c){
 		x *= c;
 		y *= c;
+		return this;
+	}
+	
+	public Vector2 mul(float i, float j){
+		this.x *= i;
+		this.y *= j;
 		return this;
 	}
 	

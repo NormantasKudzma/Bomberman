@@ -1,9 +1,6 @@
 package game;
 
 import graphics.SpriteAnimation;
-
-import java.lang.reflect.InvocationTargetException;
-
 import utils.Config;
 import utils.ConfigManager;
 import utils.Pair;
@@ -76,7 +73,7 @@ public class PlayerEntity extends Entity<SpriteAnimation> {
 		}
 
 		@Override
-		public void handleEvent(long mask, int... params) {
+		public void handleEvent(long mask, Vector2 pos, int... params) {
 			try {
 				metodas.invoke(player);
 			} 
@@ -85,5 +82,4 @@ public class PlayerEntity extends Entity<SpriteAnimation> {
 			}
 		}
 	}
-
 }

@@ -13,5 +13,6 @@ public class Paths {
 	
 	public static final String ALLOWED_DEVICES = CONFIGS + "AllowedDevices.dat";
 	public static final String DEFAULT_KEYBINDS = CONFIGS + "DefaultKeybinds"; 
-	public static final String DEFAULT_FONT = FONTS + "DisposableDroidBB.ttf";
+	public static final String DEFAULT_FONT_IMG = FONTS + "simplefont.png";
+	public static final String DEFAULT_FONT_JSON = FONTS + "simplefont.json";
 }

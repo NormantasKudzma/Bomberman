@@ -17,7 +17,7 @@ public class PlayerEntity extends Entity<SpriteAnimation> {
 	private AbstractController keyboard;
 
 	@Override
-	protected void initEntity() {
+	public void initEntity() {
 		super.initEntity();
 		Vector2 fullScale = sprite.getHalfSize().copy().mul(getScale()).mul(2.0f);
 		body.attachBoxCollider(fullScale, new Vector2(0, 0), 0);

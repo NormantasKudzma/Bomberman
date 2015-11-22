@@ -61,8 +61,7 @@ public class AudioManager {
 	}
 	
 	public static final void destroy(){
-		stopMusic();
-		
+		stopMusic();		
 	}
 	
 	public static void playMusic(String path) {

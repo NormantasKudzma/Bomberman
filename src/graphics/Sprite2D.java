@@ -14,6 +14,8 @@ import game.IUpdatable;
 
 import java.io.IOException;
 
+import org.lwjgl.LWJGLException;
+
 import utils.Vector2;
 
 public class Sprite2D implements IRenderable, IUpdatable {

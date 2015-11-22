@@ -50,17 +50,20 @@ public class Vector2 {
 		return this;
 	}
 	
-	public void setX(float x){
+	public Vector2 setX(float x){
 		this.x = x;
+		return this;
 	}
 	
-	public void setY(float y){
+	public Vector2 setY(float y){
 		this.y = y;
+		return this;
 	}
 	
-	public void add(float x, float y){
+	public Vector2 add(float x, float y){
 		this.x += x;
 		this.y += y;
+		return this;
 	}
 	
 	public Vector2 add(Vector2 i){

@@ -65,6 +65,8 @@ import java.util.Hashtable;
 import javax.swing.ImageIcon;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -132,6 +134,7 @@ public class TextureLoader {
 	 * @return The loaded texture
 	 * @throws IOException
 	 *             Indicates a failure to access the resource
+	 * @throws LWJGLException 
 	 */
 	public Texture getTexture(String resourceName) throws IOException {
 		Texture tex = table.get(resourceName);
@@ -142,11 +145,11 @@ public class TextureLoader {
 
 		tex = getTexture(resourceName, GL_TEXTURE_2D, // target
 				GL_RGBA, // dst pixel format
-				GL_LINEAR, // min filter (unused)
-				GL_LINEAR);
+				GL11.GL_NEAREST, // min filter (unused)
+				GL11.GL_NEAREST);
 
 		table.put(resourceName, tex);
-
+		
 		return tex;
 	}
 

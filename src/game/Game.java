@@ -25,6 +25,10 @@ public class Game implements IUpdatable {
 
 	}
 
+	public void addEntity(Entity e){
+		entityList.add(e);
+	}
+	
 	/**
 	 * Game destruction method. This method will be called last. Any resources
 	 * that must be released, should be released here.
@@ -47,7 +51,7 @@ public class Game implements IUpdatable {
 		p.readKeybindings();
 		p.setSprite(new SpriteAnimation("ranger_f.json"));
 		p.initEntity();
-		p.setPosition(1, 1);
+		p.setPosition(0.3f, 0.3f);
 		entityList.add(p);
 	}
 

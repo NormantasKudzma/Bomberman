@@ -18,6 +18,8 @@ import java.nio.channels.ReadableByteChannel;
 import org.json.JSONObject;
 import org.lwjgl.BufferUtils;
 
+import sun.misc.IOUtils;
+
 public class ConfigManager {
 	private static String commentDelim = "#";
 	private static String kvDelim = "=";
@@ -70,9 +72,8 @@ public class ConfigManager {
 				path += ".json";
 			}
 			URL url = Thread.currentThread().getContextClassLoader().getResource(path);
-			System.out.println("Tryload " + url.toString());
-			//byte buffer[] = Files.readAllBytes(java.nio.file.Paths.get(url.toString()));		
-			byte buffer[] = sun.misc.IOUtils.readFully(url.openStream(), -1, true);			
+			System.out.println("Tryload " + url.toString());	
+			byte buffer[] = IOUtils.readFully(url.openStream(), -1, true);			
 			
 			String contents = new String(buffer);
 			JSONObject obj = new JSONObject(contents);

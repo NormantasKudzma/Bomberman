@@ -25,8 +25,6 @@ public class PhysicsDebugDraw {
 			ul = Vector2.fromVec2(aabb.upperBound)/*.sub(localpos)*/;
 			br = Vector2.fromVec2(aabb.lowerBound)/*.add(localpos)*/;
 			GL11.glPushMatrix();
-			//GL11.glTranslatef(localpos.x, localpos.y, 0);
-			//GL11.glRectf(br.x, br.y, ul.x, ul.y);
 			GL11.glLineWidth(2.0f);
 			GL11.glBegin(GL11.GL_LINE_LOOP);
 			GL11.glVertex2f(br.x, br.y);

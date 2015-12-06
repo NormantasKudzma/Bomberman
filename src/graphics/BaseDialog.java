@@ -4,15 +4,22 @@ import game.Entity;
 
 import java.util.ArrayList;
 
+import utils.Paths;
 import utils.Vector2;
 
 public class BaseDialog extends Entity<Sprite2D> implements IClickable{
-	private ArrayList<Button> clickables;
-	private boolean isVisible = false;
-	private Button lastClickable;
+	protected ArrayList<Button> clickables = new ArrayList<Button>();
+	protected boolean isVisible = false;
+	protected Button lastClickable;
+	protected String name = "BaseDialog";
 	
-	public BaseDialog(){
-		
+	public BaseDialog(String name){
+		this.name = name;
+		this.setSprite(new Sprite2D(Paths.UI + "square_blue.png"));
+		initEntity();
+		getScale().mul(40f);
+		setPosition(1.0f, 1.0f);
+		initialize();
 	}
 	
 	public void addClickable(Button clickable){
@@ -21,6 +28,14 @@ public class BaseDialog extends Entity<Sprite2D> implements IClickable{
 
 	public ArrayList<Button> getClickables(){
 		return clickables;
+	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	protected void initialize(){
+		
 	}
 	
 	@Override
@@ -35,8 +50,16 @@ public class BaseDialog extends Entity<Sprite2D> implements IClickable{
 			    pos.y > getPosition().y - sprite.getRenderOffset().y;
 	}
 
+	public boolean isVisible(){
+		return isVisible;
+	}
+	
 	@Override
 	public boolean onClick(Vector2 pos) {
+		if (!isVisible){
+			return false;
+		}
+		
 		boolean ret = isMouseOver(pos);
 		
 		if (lastClickable != null){
@@ -56,14 +79,22 @@ public class BaseDialog extends Entity<Sprite2D> implements IClickable{
 		}
 	}
 	
+	public void setName(String name){
+		this.name = name;
+	}
+	
 	public void setVisible(boolean isVisible){
 		this.isVisible = isVisible;
 	}
 
 	@Override
 	public boolean onHover(Vector2 pos) {
+		if (!isVisible){
+			return false;
+		}
+		
 		boolean ret = isMouseOver(pos);
-	    
+		
 		lastClickable = null;
 		if (ret){
 			for (Button clickable : clickables){

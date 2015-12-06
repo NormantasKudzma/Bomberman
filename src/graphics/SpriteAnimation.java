@@ -49,7 +49,7 @@ public class SpriteAnimation implements IRenderable, IUpdatable{
 		return null;
 	}
 	
-	private void loadSpriteSheet(String path){
+	public void loadSpriteSheet(String path){
 		JSONObject obj = ConfigManager.loadConfigAsJson(Paths.ANIMATIONS + path);
 		Vector2 sheetSize = new Vector2(obj.getInt("width"), obj.getInt("height"));
 		int numStates = obj.getInt("numstates");

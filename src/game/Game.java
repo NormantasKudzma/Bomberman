@@ -1,5 +1,7 @@
 package game;
 
+import graphics.BaseDialog;
+import graphics.IClickable;
 import graphics.PhysicsDebugDraw;
 import graphics.Sprite2D;
 import graphics.SpriteAnimation;
@@ -13,18 +15,23 @@ import physics.PhysicsWorld;
 import utils.Paths;
 import utils.Vector2;
 
-public class Game implements IUpdatable {
+public class Game implements IUpdatable, IClickable {
 	private static final int NUM_VELOCITY_ITERATIONS = 2;
 	private static final int NUM_POSITION_ITERATIONS = 4;
 
 	private ArrayList<Integer> destroyList = new ArrayList<Integer>();
 	private ArrayList<Entity> entityList = new ArrayList<Entity>();
+	private ArrayList<BaseDialog> dialogList = new ArrayList<BaseDialog>();
 	private PhysicsWorld physicsWorld = PhysicsWorld.getInstance();
 
 	public Game() {
 
 	}
 
+	public void addDialog(BaseDialog d){
+		dialogList.add(d);
+	}
+	
 	public void addEntity(Entity e){
 		entityList.add(e);
 	}
@@ -115,6 +122,15 @@ public class Game implements IUpdatable {
 	 * 
 	 */
 	public void render() {
+		// If there are visible dialogs, don't render the game
+		BaseDialog d;
+		for (int i = 0; i < dialogList.size(); i++){
+			if ((d = dialogList.get(i)).isVisible()){
+				d.render();
+				return;
+			}
+		}
+		
 		for (Entity e : entityList) {
 			e.render();
 		}
@@ -122,6 +138,16 @@ public class Game implements IUpdatable {
 		PhysicsDebugDraw.render();
 	}
 
+	public void setDialogVisible(String name, boolean isVisible){
+		BaseDialog d;
+		for (int i = 0; i < dialogList.size(); i++){
+			if ((d = dialogList.get(i)).getName().equals(name)){
+				d.setVisible(isVisible);
+				return;
+			}
+		}
+	}
+	
 	/**
 	 * Main game update method. Physics and entities should be moved during
 	 * update.
@@ -129,6 +155,15 @@ public class Game implements IUpdatable {
 	 * @param deltaTime - time that has passed since last frame (in ms)
 	 */
 	public void update(float deltaTime) {
+		// If there are visible dialogs, don't update the game
+		BaseDialog d;
+		for (int i = 0; i < dialogList.size(); i++){
+			if ((d = dialogList.get(i)).isVisible()){
+				d.update(deltaTime);
+				return;
+			}
+		}
+		
 		// Update physics
 		physicsWorld.getWorld().step(deltaTime, NUM_VELOCITY_ITERATIONS, NUM_POSITION_ITERATIONS);
 
@@ -148,5 +183,31 @@ public class Game implements IUpdatable {
 			entityList.remove(i);
 		}
 		destroyList.clear();
+	}
+
+	
+	@Override
+	public boolean isMouseOver(Vector2 pos) {
+		return true;
+	}
+
+	@Override
+	public boolean onHover(Vector2 pos) {
+		for (int i = 0; i < dialogList.size(); i++){
+			if (dialogList.get(i).onHover(pos)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean onClick(Vector2 pos) {
+		for (int i = 0; i < dialogList.size(); i++){
+			if (dialogList.get(i).onClick(pos)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -70,15 +70,14 @@ public class Main {
 			@Override
 			public void handleEvent(long eventArg, Vector2 pos, int... params) {
 				if (params[0] == 1){
-					System.out.println("CLICK " + eventArg + "\tx" + pos.x + "\ty" + pos.y + "\tstate " + params[0]);
-					System.out.println(btn.onClick(pos));
+					game.onClick(pos);
 				}
 			}			
 		});
 		c.setMouseMoveListener(new ControllerEventListener(){
 			@Override
 			public void handleEvent(long eventArg, Vector2 pos, int... params) {
-				btn.onHover(pos);
+				game.onHover(pos);
 			}
 		});
 	}

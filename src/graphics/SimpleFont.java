@@ -1,5 +1,6 @@
 package graphics;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONObject;
@@ -9,11 +10,13 @@ import utils.Paths;
 import utils.Vector2;
 
 public class SimpleFont implements IRenderable {
+	private static final float MAGIC_SCALE = 1.4f;
 	private static final HashMap<Character, Symbol> symbols = new HashMap<Character, Symbol>(128);
 	private static Symbol defaultSymbol;
 
 	private String text;
 	private Vector2 internalPos;
+	private ArrayList<Symbol> textSymbols = new ArrayList<Symbol>();
 
 	static {
 		Sprite2D sheet = new Sprite2D(Paths.DEFAULT_FONT_IMG);
@@ -53,18 +56,24 @@ public class SimpleFont implements IRenderable {
 
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	@Override
-	public void render(Vector2 position, float rotation, Vector2 scale) {
-		float step = defaultSymbol.sprite.getHalfSize().x * 1.2f * scale.x;
-		internalPos = position.copy().add(-step * 0.4166f * text.length(), 0);
+		textSymbols.clear();
 		Symbol s;
 		for (int i = 0; i < text.length(); i++) {
 			s = symbols.get(text.charAt(i));
 			if (s == null) {
 				s = defaultSymbol;
 			}
+			textSymbols.add(s);
+		}
+	}
+
+	@Override
+	public void render(Vector2 position, float rotation, Vector2 scale) {
+		float step = defaultSymbol.sprite.getHalfSize().x * MAGIC_SCALE * scale.x;
+		internalPos = position.copy().add(-step * 0.5f * text.length() + step * 0.5f, 0);
+		Symbol s;
+		for (int i = 0; i < textSymbols.size(); i++) {			
+			s = textSymbols.get(i);
 			internalPos.y = s.offset + position.y;
 			s.sprite.render(internalPos, rotation, scale);
 			internalPos.x += step;

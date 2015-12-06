@@ -8,12 +8,12 @@ import utils.Paths;
 import utils.Vector2;
 
 public class Button extends Entity<Sprite2D> implements IClickable{
-	private Object callbackObject;
-	private Method callbackMethod;
-	private Sprite2D normalSprite;
-	private Sprite2D hoverSprite;
-	private SimpleFont font;
-	private Vector2 fontScale;
+	protected Object callbackObject;
+	protected Method callbackMethod;
+	protected Sprite2D normalSprite;
+	protected Sprite2D hoverSprite;
+	protected Vector2 fontScale = Vector2.one;
+	protected Label label;
 	
 	public Button(){
 		this(null, null, "");
@@ -31,7 +31,7 @@ public class Button extends Entity<Sprite2D> implements IClickable{
 	}
 	
 	public String getText(){
-		return font.getText();
+		return label.getText();
 	}
 	
 	@Override
@@ -81,19 +81,19 @@ public class Button extends Entity<Sprite2D> implements IClickable{
 	}
 	
 	public void setText(String text){
-		if (font == null){
-			font = new SimpleFont(text);
+		if (label == null){
+			label = new Label(text);
 		}
 		else {
-			font.setText(text);
+			label.setText(text);
 		}
 	}
 	
 	@Override
 	public void render(Vector2 position, float rotation, Vector2 scale) {
 		super.render(position, rotation, scale);
-		if (font != null){
-			font.render(position, rotation, fontScale);
+		if (label != null){
+			label.render(position, rotation, fontScale);
 		}
 	}
 	

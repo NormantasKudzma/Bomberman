@@ -29,8 +29,6 @@ public class Main {
 	private Game game;
 	private long t0, t1; // Frame start/end time
 	
-	Button btn;
-	
 	private void destroy() {
 		game.destroy();
 		AudioManager.destroy();
@@ -58,11 +56,6 @@ public class Main {
 		
 		//AudioManager.playMusic("menu.ogg");
 		//AudioManager.playSound(SoundType.BOMB_EXPLODE);
-		
-		btn = new Button();
-		btn.setText("Click");
-		btn.setPosition(1.0f, 1.0f);
-		btn.setScale(new Vector2(6.0f, 2.0f));
 		
 		LwjglMouseController c = (LwjglMouseController) ControllerManager.getInstance().getController(EController.LWJGLMOUSECONTROLLER);
 		c.addKeybind(0, new ControllerEventListener(){
@@ -113,11 +106,9 @@ public class Main {
 
 			// Render game and swap buffers
 			game.render();
-			btn.render();
 			//ttf.render(Vector2.one, 0, Vector2.one);
 			
 			Display.update();
-			//Display.sync(2);
 			Display.sync(TARGET_FPS);
 		}
 	}

@@ -6,7 +6,10 @@ import graphics.Sprite2D;
 import utils.Vector2;
 
 public class WallEntity extends Entity<Sprite2D> {
-
+	public WallEntity(){
+		isDestructible = false;
+	}
+	
 	@Override
 	protected void initEntity() {
 		super.initEntity();

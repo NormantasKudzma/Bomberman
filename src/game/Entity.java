@@ -9,6 +9,7 @@ import utils.Vector2;
 public abstract class Entity<S extends IRenderable & IUpdatable> implements ICollidable, IRenderable, IUpdatable {
 	protected PhysicsBody body;
 	protected boolean isLifetimeFinite = false;
+	protected boolean isDestructible = true;
 	protected float lifetime = 0.0f;
 	protected S sprite;
 	protected boolean toBeDestroyed;
@@ -56,9 +57,16 @@ public abstract class Entity<S extends IRenderable & IUpdatable> implements ICol
 		return toBeDestroyed;
 	}
 	
+	public boolean isDestructible(){
+		return isDestructible;
+	}
+	
 	public void markForDestruction(){
+		onDestroy();
 		toBeDestroyed = true;
 	}
+	
+	public void onDestroy(){}
 	
 	public void setLifetime(float time){
 		lifetime = time;

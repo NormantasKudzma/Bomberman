@@ -72,9 +72,9 @@ public class ConfigManager {
 				path += ".json";
 			}
 			URL url = Thread.currentThread().getContextClassLoader().getResource(path);
-			System.out.println("Tryload " + url.toString());	
-			byte buffer[] = IOUtils.readFully(url.openStream(), -1, true);			
-			
+			System.out.println("Tryload " + url.toString());
+			byte buffer[] = IOUtils.readFully(url.openStream(), -1, true);
+
 			String contents = new String(buffer);
 			JSONObject obj = new JSONObject(contents);
 			return obj;
@@ -85,7 +85,8 @@ public class ConfigManager {
 		return null;
 	}
 
-	public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
+	public static ByteBuffer ioResourceToByteBuffer(String resource,
+			int bufferSize) throws IOException {
 		ByteBuffer buffer;
 
 		File file = new File(resource);
@@ -139,14 +140,15 @@ public class ConfigManager {
 		return newBuffer;
 	}
 
-	public static Font loadFont(String path, int size){
+	public static Font loadFont(String path, int size) {
 		try {
-		     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		     URL url = Thread.currentThread().getContextClassLoader().getResource(path);
-		     Font font = Font.createFont(Font.TRUETYPE_FONT, url.openStream()).deriveFont(size);
-		     ge.registerFont(font);
-		     return font;
-		} catch (Exception e) {
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			URL url = Thread.currentThread().getContextClassLoader().getResource(path);
+			Font font = Font.createFont(Font.TRUETYPE_FONT, url.openStream()).deriveFont(size);
+			ge.registerFont(font);
+			return font;
+		}
+		catch (Exception e) {
 			return null;
 		}
 	}

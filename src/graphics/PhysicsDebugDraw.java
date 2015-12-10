@@ -16,9 +16,11 @@ public class PhysicsDebugDraw {
 		AABB aabb;
 		Vector2 ul, br;
 		Fixture fixture;
-		for (PhysicsBody b : PhysicsWorld.getInstance().getBodyList()){
-			//localpos = b.getPosition();
-			if ((fixture = b.getBody().getFixtureList()) == null){
+		PhysicsBody b;
+		for (int i = 0; i < PhysicsWorld.getInstance().getBodyList().size(); ++i){
+			b = PhysicsWorld.getInstance().getBodyList().get(i);
+
+			if (b == null || b.getBody() == null || (fixture = b.getBody().getFixtureList()) == null){
 				continue;
 			}
 			aabb = fixture.getAABB(0);

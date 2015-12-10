@@ -21,8 +21,10 @@ public class Game implements IUpdatable, IClickable {
 
 	private ArrayList<Integer> destroyList = new ArrayList<Integer>();
 	private ArrayList<Entity> entityList = new ArrayList<Entity>();
+	private ArrayList<PlayerEntity> playerList = new ArrayList<PlayerEntity>();
 	private ArrayList<BaseDialog> dialogList = new ArrayList<BaseDialog>();
 	private PhysicsWorld physicsWorld = PhysicsWorld.getInstance();
+	private boolean isGameOver = false;
 
 	public Game() {
 
@@ -34,6 +36,10 @@ public class Game implements IUpdatable, IClickable {
 	
 	public void addEntity(Entity e){
 		entityList.add(e);
+		if (e instanceof PlayerEntity){
+			playerList.add((PlayerEntity) e);
+			isGameOver = false;
+		}
 	}
 	
 	/**
@@ -47,6 +53,20 @@ public class Game implements IUpdatable, IClickable {
 		entityList.clear();
 	}
 
+	public BaseDialog getDialog(String name){
+		BaseDialog d;
+		for (int i = 0; i < dialogList.size(); i++){
+			if ((d = dialogList.get(i)).getName().equals(name)){
+				return d;
+			}
+		}
+		return null;
+	}
+	
+	public ArrayList<Entity> getEntityList(){
+		return entityList;
+	}
+	
 	/**
 	 * Game initialization (creating entities, loading map etc.) goes here
 	 * 
@@ -54,7 +74,7 @@ public class Game implements IUpdatable, IClickable {
 	public void init() {
 		initMap();
 
-		PlayerEntity p = new PlayerEntity();
+		PlayerEntity p = new PlayerEntity(this);
 		p.readKeybindings();
 		p.setSprite(new SpriteAnimation("ranger_f.json"));
 		p.initEntity();
@@ -131,8 +151,8 @@ public class Game implements IUpdatable, IClickable {
 			}
 		}
 		
-		for (Entity e : entityList) {
-			e.render();
+		for (int i = 0 ; i < entityList.size(); ++i){
+			entityList.get(i).render();
 		}
 		
 		PhysicsDebugDraw.render();
@@ -180,11 +200,18 @@ public class Game implements IUpdatable, IClickable {
 		// Delete entities which are marked for destruction
 		for (Integer i : destroyList) {
 			entityList.get(i).destroy();
-			entityList.remove(i);
+			entityList.remove((int)i);
 		}
 		destroyList.clear();
+		
+		if (playerList.isEmpty()){
+			isGameOver = true;
+		}
 	}
-
+	
+	public boolean isGameOver(){
+		return isGameOver;
+	}
 	
 	@Override
 	public boolean isMouseOver(Vector2 pos) {

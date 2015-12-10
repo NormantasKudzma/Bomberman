@@ -3,3 +3,4 @@ PLAYER1=LWJGLKEYBOARDCONTROLLER
 208=moveDown
 203=moveLeft
 205=moveRight
+57=placeBomb

@@ -72,7 +72,7 @@ public class SimpleFont implements IRenderable {
 		float step = defaultSymbol.sprite.getHalfSize().x * MAGIC_SCALE * scale.x;
 		internalPos = position.copy().add(-step * 0.5f * text.length() + step * 0.5f, 0);
 		Symbol s;
-		for (int i = 0; i < textSymbols.size(); i++) {			
+		for (int i = 0; i < textSymbols.size(); i++) {
 			s = textSymbols.get(i);
 			internalPos.y = s.offset + position.y;
 			s.sprite.render(internalPos, rotation, scale);

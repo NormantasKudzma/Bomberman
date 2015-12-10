@@ -15,11 +15,19 @@ public class PlayerEntity extends Entity<SpriteAnimation> {
 	private float moveSpeed = 0.5f;
 	private Vector2 moveDirection = new Vector2();
 	private AbstractController keyboard;
+	private int bombLimit = 1;
+	private int availableBombs = bombLimit;
+	private Game game;
+	
+	public PlayerEntity(Game game){
+		this.game = game;
+	}
 
 	@Override
 	public void initEntity() {
 		super.initEntity();
-		Vector2 fullScale = sprite.getHalfSize().copy().mul(getScale()).mul(2.0f);
+		getScale().mul(0.45f, 0.82f);
+		Vector2 fullScale = sprite.getHalfSize().copy().mul(getScale()).mul(2.0f).mul(0.9f);
 		body.attachBoxCollider(fullScale, new Vector2(0, 0), 0);
 	}
 	
@@ -63,6 +71,23 @@ public class PlayerEntity extends Entity<SpriteAnimation> {
 		moveDirection.x = moveSpeed;
 	}
 
+	public void placeBomb(){
+		if (availableBombs <= 0){
+			return;
+		}
+		--availableBombs;
+		BombEntity bomb = new BombEntity(this);
+		bomb.initEntity();
+		bomb.setPosition(getPosition().copy());
+		game.addEntity(bomb);
+	}
+	
+	public void freeBomb(){
+		if (availableBombs < bombLimit){
+			++availableBombs;
+		}
+	}
+	
 	class K1 implements ControllerEventListener {
 		java.lang.reflect.Method metodas;
 		PlayerEntity player;

@@ -117,6 +117,12 @@ public class Vector2 {
 		return this;
 	}
 	
+	public Vector2 sub(float i, float j) {
+		x -= i;
+		y -= j;
+		return this;
+	}
+	
 	public Vec2 toVec2()
 	{
 		return toVec2(this);
@@ -157,7 +163,17 @@ public class Vector2 {
 	}
 	
 	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Vector2)){
+			return false;
+		}
+		Vector2 v = (Vector2)obj;
+		return v == this || (v.x == x && v.y == y);
+	}
+	
+	@Override
 	public String toString() {
 		return String.format("Vector2[x:%f, y:%f] ", x, y);
 	}
+
 }

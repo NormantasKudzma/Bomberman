@@ -28,8 +28,7 @@ public class ConfigManager {
 		return loadConfigAsPairs(path, false);
 	}
 
-	public static Config<String, String> loadConfigAsPairs(String path,
-			boolean isHeaderUnique) {
+	public static Config<String, String> loadConfigAsPairs(String path, boolean isHeaderUnique) {
 		try {
 			URL url = Thread.currentThread().getContextClassLoader().getResource(path);
 			System.out.println("Tryload " + url.toString());

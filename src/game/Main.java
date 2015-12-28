@@ -17,6 +17,7 @@ import controls.ControllerEventListener;
 import controls.ControllerManager;
 import controls.EController;
 import controls.LwjglMouseController;
+import dialogs.InitialDialog;
 
 public class Main {
 	private static final int TARGET_FPS = 60;
@@ -53,6 +54,10 @@ public class Main {
 		// Create and initialize game
 		game = new Game();
 		game.init();
+		
+		InitialDialog initialDialog = new InitialDialog();
+		initialDialog.setVisible(true);
+		game.addDialog(initialDialog);
 		
 		//AudioManager.playMusic("menu.ogg");
 		//AudioManager.playSound(SoundType.BOMB_EXPLODE);

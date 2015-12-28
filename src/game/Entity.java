@@ -107,7 +107,9 @@ public abstract class Entity<S extends IRenderable & IUpdatable> implements ICol
 	}
 	
 	public void update(float deltaTime){
-		sprite.update(deltaTime);
+		if (sprite != null){
+			sprite.update(deltaTime);
+		}
 		
 		if (isLifetimeFinite){
 			lifetime -= deltaTime;

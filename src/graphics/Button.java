@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import utils.Paths;
 import utils.Vector2;
 
-public class Button extends Entity<Sprite2D> implements IClickable{
+public class Button extends Component{
 	protected Object callbackObject;
 	protected Method callbackMethod;
 	protected Sprite2D normalSprite;
@@ -27,7 +27,10 @@ public class Button extends Entity<Sprite2D> implements IClickable{
 		setSprite(normalSprite);
 		//this.text = new TrueTypeFont(ConfigManager.loadFont(Paths.DEFAULT_FONT, 14), false);
 		//this.text.setText(text);
+		setText(text);
 		super.initEntity();
+		setScale(Vector2.one);
+		setVisible(true);
 	}
 	
 	public String getText(){
@@ -76,7 +79,7 @@ public class Button extends Entity<Sprite2D> implements IClickable{
 	@Override
 	public void setScale(Vector2 scale) {
 		float min = Math.min(scale.x, scale.y);
-		fontScale = (new Vector2(min, min)).mul(0.25f);
+		fontScale = (new Vector2(min, min)).mul(0.16f);
 		super.setScale(scale);
 	}
 	
